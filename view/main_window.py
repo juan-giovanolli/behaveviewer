@@ -1,5 +1,6 @@
 import sys
 from PyQt4 import QtGui, QtCore
+from tables_content_manager import TableDataRepresentation
 
 
 class MainBehaveWindow(QtGui.QTabWidget):
@@ -12,6 +13,10 @@ class MainBehaveWindow(QtGui.QTabWidget):
     __TAB_STEP_INDEX = 2
     __TAB_STATISTICS_INDEX = 3
     __MAIN_LABEL_TEXT = "Features Directory: "
+    __TABLE_CONFIG = {"steps_table":{"table_column_titles":"name, descripcion, scenario, code_step"},
+                      "feature_table":{"table_column_titles":"name, descripcion, scenario, code_step"},
+                      "statistics_table":{"table_column_titles":"name, descripcion, scenario, code_step"}
+                      }
 
     def __init__(self):
         super(MainBehaveWindow, self).__init__()
@@ -79,7 +84,9 @@ class MainBehaveWindow(QtGui.QTabWidget):
 
     def __create_features_tab(self):
         self.__feature_tab = QtGui.QWidget()
-
+        features_tab_layout = QtGui.QVBoxLayout()
+        features_tab_layout.addWidget(TableDataRepresentation(None, self.__TABLE_CONFIG["steps_table"]))
+        self.__feature_tab.setLayout(features_tab_layout)
 
     def __create_steps_tab(self):
         self.__steps_tab = QtGui.QWidget()
@@ -87,6 +94,7 @@ class MainBehaveWindow(QtGui.QTabWidget):
 
     def __create_statistics_tab(self):
         self.__statistics_tab = QtGui.QWidget()
+
 
     def __register_tab(self, tab, tab_label):
         self.addTab(tab, tab_label)
@@ -101,6 +109,7 @@ class MainBehaveWindow(QtGui.QTabWidget):
         self.__create_features_tab()
         self.__create_steps_tab()
         self.__create_statistics_tab()
+
 
 def main():
     app = QtGui.QApplication(sys.argv)
