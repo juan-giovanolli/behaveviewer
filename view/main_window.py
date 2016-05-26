@@ -135,10 +135,12 @@ class MainBehaveWindow(QtGui.QTabWidget):
             time.sleep(1)
             print "parsing directory ...."
 
+
     def creating_db_tables(self):
         self.setTextInVerboseLabel("create DataBase tables .....")
         time.sleep(1)
         print "create DataBase tables ....."
+
 
     def fill_view_tables_with_sql(self):
         print "Filling View tables from SQL Sentences........."
@@ -147,6 +149,7 @@ class MainBehaveWindow(QtGui.QTabWidget):
         self.__fill_steps_table()
         self.__fill_feature_table()
         self.__fill_statistics_table()
+
 
     def __fill_steps_table(self):
         self.setTextInVerboseLabel("fill_steps_table")
@@ -172,11 +175,13 @@ class MainBehaveWindow(QtGui.QTabWidget):
         self.__create_steps_tab()
         self.__create_statistics_tab()
 
+
     def __create_function_map_for_worker(self):
         self._function_dictionary = {"PARSING_DIRECTORY: ":self.parsing_directory,\
                                      "CREATING_DB_TABLES:":self.creating_db_tables,\
-                                     "FILL_VIEW_TABLE: ":self.fill_view_tables_with_sql
+                                     "FILL_VIEW_TABLE: ":self.fill_view_tables_with_sql\
                                      }
+
     def _process_terminated(self):
         self.setTextInVerboseLabel("Process Terminated")
         self.__lock_unlock_tabs( True)
