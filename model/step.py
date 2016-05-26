@@ -4,20 +4,21 @@ Created on 24 de may. de 2016
 @author: Juan
 '''
 from peewee import SqliteDatabase, CharField, Model, ForeignKeyField
-from model import Feature, Tag
-from playhouse.fields import ManyToManyField
+from model.scenario import Scenario
+from model.code_step import CodeStep
 
 
 db = SqliteDatabase('gherkin.db')
 
-class Scenario(Model):
+class Step(Model):
     '''
     classdocs
     '''
     name = CharField()
-    description = CharField()
-    feature = ForeignKeyField(Feature, related_name='scenarios')
-    tags = ManyToManyField(Tag, related_name='scenarios')
+    description = CharField(null=True)
+    scenario = ForeignKeyField(Scenario, related_name='steps')
+    codeStep = ForeignKeyField(CodeStep, related_name='steps')
+    
     
     class Meta:
         database = db
