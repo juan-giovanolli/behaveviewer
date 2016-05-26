@@ -53,8 +53,6 @@ class MainBehaveWindow(QtGui.QTabWidget):
     def __load_feature_directory(self):
         print "loading features directory"
         #TODO: Este codigo esta en verificacion
-        #self.__is_feature_directory_loaded=True
-        #self.__lock_unlock_tabs( self.__is_feature_directory_loaded)
         self.__show_dialog_find_files()
 
     def __lock_unlock_tabs(self, lock_status):
@@ -90,9 +88,7 @@ class MainBehaveWindow(QtGui.QTabWidget):
 
     def __create_label(self, label_text):
         label = QtGui.QLabel(label_text,self)
-        #label.setText(label_text)
         label.setAlignment(QtCore.Qt.AlignCenter)
-        #label.setReadOnly(True)
         return label
 
 
@@ -126,12 +122,7 @@ class MainBehaveWindow(QtGui.QTabWidget):
         feature_directory_path = QtGui.QFileDialog.getExistingDirectory(self, 'SelectDirectory',\
                                                                 self.__CURRENT_PATH_LINUX,\
                                                                 options)
-        #TODO: Este codigo esta en testing
         self.__service_worker.start()
-        #time.sleep(2)
-        #self.parsing_directory(feature_directory_path)
-        #self.creating_db_tables()
-        #self.fill_view_tables_with_sql()
 
 
     def parsing_directory(self,feature_directory_path = None):

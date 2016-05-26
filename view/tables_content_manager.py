@@ -32,7 +32,6 @@ class TableDataRepresentation(QtGui.QTableWidget):
 
 def main():
     table_config_data = {"table_title":"steps","table_column_titles":"name, descripcion, scenario, code_step"}
-    #print table_config_data[]
     app = QtGui.QApplication(sys.argv)
     data = None
     ex = TableDataRepresentation(data, table_config_data)
