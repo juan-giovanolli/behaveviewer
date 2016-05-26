@@ -4,8 +4,8 @@ Created on 24 de may. de 2016
 @author: Juan
 '''
 from peewee import SqliteDatabase, CharField, Model, ForeignKeyField
-from Scenario import Scenario
-from CodeStep import CodeStep
+from model.scenario import Scenario
+from model.code_step import CodeStep
 
 
 db = SqliteDatabase('gherkin.db')

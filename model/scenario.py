@@ -5,8 +5,8 @@ Created on 24 de may. de 2016
 '''
 from peewee import SqliteDatabase, CharField, Model, ForeignKeyField,\
     BooleanField
-from Feature import Feature
-from Tag import Tag
+from model.feature import Feature
+from model.tag import Tag
 from playhouse.fields import ManyToManyField
 
 

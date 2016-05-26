@@ -3,9 +3,10 @@ Created on 24 de may. de 2016
 
 @author: Juan
 '''
-from model import Scenario, Feature
-from model.CodeStep import CodeStep
-from model.Step import Step
+from model.scenario import Scenario
+from model.feature import Feature
+from model.code_step import CodeStep
+from model.step import Step
 from peewee import fn
 
 class EntityService(object):
