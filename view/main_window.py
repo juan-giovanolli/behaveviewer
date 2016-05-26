@@ -24,18 +24,23 @@ class MainBehaveWindow(QtGui.QTabWidget):
     __EMPTY_TEXT = ""
     __APP_NAME = 'Behave Links'
     __MAIN_LABEL_TEXT = "Features Directory: "
+    
     __FEATURE_TABLE_ID = "feature_table"
     __STEPS_TABLE_ID = "steps_table"
     __STATISTICS_TABLE_ID = "statistics_table"
+
     __TABLE_CONFIG = {"steps_table":{"table_column_titles":"name, descripcion, scenario, code_step"},
                       "feature_table":{"table_column_titles":"name, descripcion"},
-                      "statistics_table":{"table_column_titles":"name, descripcion, scenario, code_step"}
+                      "statistics_table":{"table_column_titles":"Most Used Step name, Count"}
                       }
 
     def __init__(self, db_service_manager):
         super(MainBehaveWindow, self).__init__()
         self.__is_feature_directory_loaded=False
         self.__db_service_manager = db_service_manager
+        self.__step_table = TableDataRepresentation(None, self.__TABLE_CONFIG[self.__STEPS_TABLE_ID],self.__db_service_manager, self.__STEPS_TABLE_ID)
+        self.__feature_table = TableDataRepresentation(None, self.__TABLE_CONFIG[self.__FEATURE_TABLE_ID], self.__db_service_manager, self.__FEATURE_TABLE_ID )
+        self.__statistics_table = TableDataRepresentation(None, self.__TABLE_CONFIG[self.__STATISTICS_TABLE_ID],self.__db_service_manager,self.__STATISTICS_TABLE_ID)
         self.initUI()
         self.__create_function_map_for_worker()
         self.__service_worker = ServiceThread(self._function_dictionary)
@@ -104,25 +109,20 @@ class MainBehaveWindow(QtGui.QTabWidget):
     def __create_features_tab(self):
         self.__feature_tab = QtGui.QWidget()
         features_tab_layout = QtGui.QVBoxLayout()
-        features_tab_layout.addWidget(TableDataRepresentation(None,\
-                                                                 self.__TABLE_CONFIG[self.__FEATURE_TABLE_ID], \
-                                                                 self.__db_service_manager, \
-                                                                 self.__FEATURE_TABLE_ID \
-                                                                 )\
-                                                               )
+        features_tab_layout.addWidget(self.__feature_table )
         self.__feature_tab.setLayout(features_tab_layout)
 
     def __create_steps_tab(self):
         self.__steps_tab = QtGui.QWidget()
         step_tab_layout = QtGui.QVBoxLayout()
-        step_tab_layout.addWidget(TableDataRepresentation(None, self.__TABLE_CONFIG[self.__STEPS_TABLE_ID],self.__db_service_manager, self.__STEPS_TABLE_ID))
+        step_tab_layout.addWidget(self.__step_table)
         self.__steps_tab.setLayout(step_tab_layout)
 
 
     def __create_statistics_tab(self):
         self.__statistics_tab = QtGui.QWidget()
         statistics_tab_layout = QtGui.QVBoxLayout()
-        statistics_tab_layout.addWidget(TableDataRepresentation(None, self.__TABLE_CONFIG[self.__STATISTICS_TABLE_ID],self.__db_service_manager,self.__STATISTICS_TABLE_ID))
+        statistics_tab_layout.addWidget(self.__statistics_table)
         self.__statistics_tab.setLayout(statistics_tab_layout)
 
     def __register_tab(self, tab, tab_label):
@@ -143,23 +143,19 @@ class MainBehaveWindow(QtGui.QTabWidget):
         #TODO: Crear variable que setea estado de la aplicacion
         if feature_directory_path is not None:
             self.setTextInVerboseLabel("Seletcted Path : {0}".format(feature_directory_path))
-            time.sleep(1)
             print "Path Seleccionado: {0}".format(feature_directory_path)
             self.setTextInVerboseLabel("parsing directory ....")
-            time.sleep(1)
             print "parsing directory ...."
 
 
     def creating_db_tables(self):
         self.setTextInVerboseLabel("create DataBase tables .....")
-        time.sleep(1)
         print "create DataBase tables ....."
 
 
     def fill_view_tables_with_sql(self):
         print "Filling View tables from SQL Sentences........."
         self.setTextInVerboseLabel("Filling View tables from SQL Sentences.........")
-        time.sleep(1)
         self.__fill_steps_table()
         self.__fill_feature_table()
         self.__fill_statistics_table()
@@ -167,19 +163,23 @@ class MainBehaveWindow(QtGui.QTabWidget):
 
     def __fill_steps_table(self):
         self.setTextInVerboseLabel("fill_steps_table")
-        time.sleep(1)
+        data = self.__step_table.extract_data_fom_sql_table()
+        self.__step_table.updateData(data)
         print "fill_steps_table"
 
 
     def __fill_feature_table(self):
         self.setTextInVerboseLabel("__fill_feature_table")
-        time.sleep(1)
+        print "extracting data from feature sql table"
+        data = self.__feature_table.extract_data_fom_sql_table()
+        self.__feature_table.updateData(data)
         print "__fill_feature_table"
 
 
     def __fill_statistics_table(self):
         self.setTextInVerboseLabel("__fill_statistics_table")
-        time.sleep(1)
+        data=self.__statistics_table.extract_data_fom_sql_table()
+        self.__statistics_table.updateData(data)
         print "__fill_statistics_table"
 
 
