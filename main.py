@@ -5,6 +5,7 @@ Created on 24 de may. de 2016
 '''
 from model.Tag import Tag
 from peewee import SqliteDatabase
+from parser.parser import Parser
 db = SqliteDatabase('gherkin.db')
 
 if __name__ == '__main__':
@@ -14,3 +15,5 @@ if __name__ == '__main__':
     query = Tag.select().where(Tag.name == 'Juan')
     for tag in query:
         print tag.name, tag.id
+
+    p = Parser("../behave.example")

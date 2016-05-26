@@ -1,0 +1,110 @@
+Feature: McAfee Agent action via DXL - NonWindows
+
+    Background:
+        Given ZZZZZZZZZZZZZZZZZZZZZZZZZZ
+
+
+  @FVT @DXL_AGENT_NONWIN @FAILED_VALIDATION @INVALID_IN_MCST
+  Scenario: Run Wake Up Agents and verify dxl_service.log - CentOS
+    Given AAAAAAAAAAAAAAAAAAAAAAAA
+    Then BBBBBBBBBBBBBBBBBBBBBBBB
+    And CCCCCCCCCCCCCCCCCCCCCCCC
+
+    Then DDDDDDDDDDDDDDDDDDDDDDDDDDDDDd
+    Given EEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+    Then FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+    And GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
+
+    Then HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+    And IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
+    Then JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ
+    And KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK
+
+  @FVT @DXL_AGENT_NONWIN @FAILED_VALIDATION @INVALID_IN_MCST
+  Scenario: Run Wake Up Agents and verify dxl_service.log - Debian
+    Given LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL
+    Then MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+    And NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+
+    Then OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+    Given PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
+    Then QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ
+    And RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR
+
+    Then SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
+    And TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
+    Then UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU
+    And WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+
+
+  @FVT @DXL_AGENT_NONWIN @ONPREM_ONLY @FAILED_VALIDATION @INVALID_IN_MCST
+  Scenario: Run Client Task and verify dxl_service.log - CentOS
+    Given I skip this scenario if ePO is not version 5.3 or ePO 5.6 and above
+    #Then I install DXLRemoteManagement extension in ePO
+
+    Then I enable timesync on client with "CentOS" "32"-bit client
+    And I enable timesync on client with "CentOS" "64"-bit client
+
+    Then I set the pre-wakeup time in the context
+    Given I execute Run Client Task via DXL with "CentOS" "32"-bit client
+    Then I download the dxl_service.log from "CentOS" "32"-bit client
+    And I search the dxl_service.log for the epo.service.datachannel string
+
+    Then I set the pre-wakeup time in the context
+    Given I execute Run Client Task via DXL with "CentOS" "64"-bit client
+    Then I download the dxl_service.log from "CentOS" "64"-bit client
+    And I search the dxl_service.log for the epo.service.datachannel string
+
+
+  @FVT @DXL_AGENT_NONWIN @ONPREM_ONLY @FAILED_VALIDATION @INVALID_IN_MCST
+  Scenario: Run Client Task and verify dxl_service.log - Debian
+    Given I skip this scenario if ePO is not version 5.3 or ePO 5.6 and above
+    #Then I install DXLRemoteManagement extension in ePO
+
+    Then I enable timesync on client with "Debian" "32"-bit client
+    And I enable timesync on client with "Debian" "64"-bit client
+
+    Then I set the pre-wakeup time in the context
+    Given I execute Run Client Task via DXL with "Debian" "32"-bit client
+    Then I download the dxl_service.log from "Debian" "32"-bit client
+    And I search the dxl_service.log for the epo.service.datachannel string
+
+    Then I set the pre-wakeup time in the context
+    Given I execute Run Client Task via DXL with "Debian" "64"-bit client
+    Then I download the dxl_service.log from "Debian" "64"-bit client
+    And I search the dxl_service.log for the epo.service.datachannel string
+
+
+  @FVT @DXL_AGENT_NONWIN @ONPREM_ONLY @FAILED_VALIDATION @INVALID_IN_MCST
+  Scenario: Run Get Repository and verify dxl_service.log - CentOS
+    Given I skip this scenario if ePO is not version 5.3
+    Then I install DXLRemoteManagement extension in ePO
+    Then I enable timesync on client with "CentOS" "32"-bit client
+    And I enable timesync on client with "CentOS" "64"-bit client
+
+    Then I set the pre-wakeup time in the context
+    Given I execute Get Repository via DXL with "CentOS" "32"-bit client
+    Then I download the dxl_service.log from "CentOS" "32"-bit client
+    And I search the dxl_service.log for the ma.service.repository string
+
+    Then I set the pre-wakeup time in the context
+    Given I execute Get Repository via DXL with "CentOS" "64"-bit client
+    Then I download the dxl_service.log from "CentOS" "64"-bit client
+    And I search the dxl_service.log for the ma.service.repository string
+
+  @FVT @DXL_AGENT_NONWIN @ONPREM_ONLY @FAILED_VALIDATION @INVALID_IN_MCST
+  Scenario: Run Get Repository and verify dxl_service.log - Debian
+    Given I skip this scenario if ePO is not version 5.3
+    Then I install DXLRemoteManagement extension in ePO
+    Then I enable timesync on client with "Debian" "32"-bit client
+    And I enable timesync on client with "Debian" "64"-bit client
+
+    Then I set the pre-wakeup time in the context
+    Given I execute Get Repository via DXL with "Debian" "32"-bit client
+    Then I download the dxl_service.log from "Debian" "32"-bit client
+    And I search the dxl_service.log for the ma.service.repository string
+
+    Then I set the pre-wakeup time in the context
+    Given I execute Get Repository via DXL with "Debian" "64"-bit client
+    Then I download the dxl_service.log from "Debian" "64"-bit client
+    And I search the dxl_service.log for the ma.service.repository string

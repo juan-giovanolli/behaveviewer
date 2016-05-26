@@ -1,0 +1,184 @@
+import pdb
+from collections import OrderedDict
+
+SCENARIO = 'scenario:'
+BACKGROUND = 'background:'
+FEATURE = 'feature:'
+TAG = 'tag'
+GIVEN = 'given'
+WHEN = 'when'
+THEN = 'then'
+AND = 'and'
+
+
+class Stack:
+    """
+    This is a stack of tuples (key, value) of strings
+    """
+
+    def __init__(self):
+        self.items = []
+
+
+    def push(self, key, value):
+        self.items.append((key, value))
+
+
+    def pop(self):
+        return self.items.pop()
+
+
+    def is_empty(self):
+        return (self.items == [])
+
+
+    def contains(self, key):
+        result = False
+        for it in self.items:
+            result = result or it[0] == key.lower()
+        return result
+
+
+    def get_list(self):
+        result = []
+        while not self.is_empty():
+            result.append(self.pop())
+        return result
+
+
+class Parser:
+
+    def __init__(self, filename):
+        self.parser_stack = Stack()
+        self.parsed_scenario = Stack()
+        self.has_background = False
+        self.EOF = False    #Needed to analize last scenario
+
+
+    def run(self):
+        line = 'initial value for string that should be overwritten'
+        with open(filename) as file:
+            while line:
+                line = file.readline()
+                self.analize_line(line)
+            self.EOF = True
+            self.analize_line(line)
+            
+
+    def analize_line(self, line):
+        tokens = self.tokenize_line(line)
+        if tokens and self.is_feature(tokens):
+            self.handle_feature(tokens)
+        elif tokens and self.is_background(tokens):
+            self.handle_background(tokens)
+        elif self.EOF or tokens and self.is_tag(tokens):
+            self.handle_tag(tokens)
+        elif tokens and self.is_scenario(tokens):
+            self.handle_scenario(tokens)
+        elif tokens and self.is_step(tokens):
+            self.handle_step(tokens)
+
+
+    def tokenize_line(self, line):
+        new_line = []
+        raw_line = line.split()
+        if raw_line and '#' not in raw_line[0]:
+            for a in raw_line:
+                tokens = a.split(':')
+                if len(tokens) > 1:
+                    new_line.append(tokens[0] + ':')
+                    new_line.append(tokens[1])
+                else:
+                    new_line.append(tokens[0])
+        return new_line
+
+
+    def is_feature(self, tokens):
+        return tokens[0].lower() == FEATURE
+
+
+    def is_background(self, tokens):
+        return tokens[0].lower() == BACKGROUND
+
+
+    def is_tag(self, tokens):
+        return tokens[0][0] == '@'
+
+
+    def is_scenario(self, tokens):
+        return tokens[0].lower() == SCENARIO
+
+
+    def is_step(self, tokens):
+        step = tokens[0].lower()
+        return step == GIVEN or step == WHEN or step == THEN or step == AND
+
+
+    def handle_feature(self, tokens):
+        result = not self.parser_stack.contains(FEATURE)
+        if result:
+            self.parser_stack.push(FEATURE, tokens[1:])
+        return result
+
+
+    def handle_background(self, tokens):
+        self.has_background = True
+        result = not self.parser_stack.contains(BACKGROUND)
+        if result:
+            self.parser_stack.push(BACKGROUND, '')
+        else:
+            raise RuntimeError("There is more than one background in the feature.")
+        return result
+
+
+    def handle_tag(self, tokens):
+        end_scenario = self.parser_stack.contains(TAG) or self.parser_stack.contains(SCENARIO) or self.EOF
+        if end_scenario:
+            self.parsed_scenario = self.process_scenario()
+        self.parser_stack.push(TAG, [tk[1:] for tk in tokens ])
+
+
+    def handle_scenario(self, tokens):
+        end_scenario = self.parser_stack.contains(SCENARIO) or self.EOF
+        if end_scenario:
+            self.parsed_scenario = self.process_scenario()
+        self.parser_stack.push(SCENARIO, tokens[1:])
+
+
+    def handle_step(self, tokens):
+        self.parser_stack.push(tokens[0], tokens[1:])
+
+
+    def process_scenario(self):
+        parsed_scenario = Stack()
+        while self.parser_stack.contains(TAG) or self.parser_stack.contains(SCENARIO): #TODO: CHECK #scenario in case that no tags are used
+            last_token, text = self.parser_stack.pop()
+            parsed_scenario.push(last_token, text)
+        if self.parser_stack.contains(BACKGROUND):
+            has_background = True
+            last_token, text = self.parser_stack.pop()
+            background_steps = []
+            if last_token != BACKGROUND:
+                #Parsing background steps
+                background_steps.append((last_token, text))
+            else:
+                parsed_scenario.push(last_token, background_steps)
+        if self.parser_stack.contains(FEATURE):
+            last_token, text = self.parser_stack.pop()
+            parsed_scenario.push(last_token, text)
+        self.revert_stack(text)
+        #Returns a list with this order: feature, tags, scenario, steps
+        return parsed_scenario.get_list()
+
+
+    def revert_stack(self, text):
+        self.parser_stack = Stack()
+        self.parser_stack.push(FEATURE, text)
+        if self.has_background:
+            self.parser_stack.push(BACKGROUND, '')
+
+
+if __name__ == '__main__':
+    p = Parser()
+    p.run()
+
