@@ -1,110 +1,24 @@
-Feature: McAfee Agent action via DXL - NonWindows
+# Created by zlaubste at 9/4/2015
+Feature: Client Broker Affinity connectedBrokerGuid Tests
 
-    Background:
-        Given ZZZZZZZZZZZZZZZZZZZZZZZZZZ
+  Background:
+    When I create a safe hub topology
+    And I start all DXL brokers Services
+    And I wait for "66" seconds
 
+  @DXL_CLIENT_BROKER_AFFINITY_CLIENT_SIDE @FVT @FAILED_VALIDATION
+  Scenario: Failover works when restrict to hub-n-children and stop both brokers
+    Then Verify client "client_1" fails over correctly when x "2" in hub are stopped and client broker affinity is restricted to a hub with "True" descendants
 
-  @FVT @DXL_AGENT_NONWIN @FAILED_VALIDATION @INVALID_IN_MCST
-  Scenario: Run Wake Up Agents and verify dxl_service.log - CentOS
-    Given AAAAAAAAAAAAAAAAAAAAAAAA
-    Then BBBBBBBBBBBBBBBBBBBBBBBB
-    And CCCCCCCCCCCCCCCCCCCCCCCC
+  @DXL_CLIENT_BROKER_AFFINITY_CLIENT_SIDE @FVT @FAILED_VALIDATION
+  Scenario: Failover works in hub when restricted to hub only stop client's broker
+    Then Verify client "client_1" fails over correctly when x "1" in hub are stopped and client broker affinity is restricted to a hub with "False" descendants
 
-    Then DDDDDDDDDDDDDDDDDDDDDDDDDDDDDd
-    Given EEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
-    Then FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-    And GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
+  @DXL_CLIENT_BROKER_AFFINITY_CLIENT_SIDE @FVT @FAILED_VALIDATION
+  Scenario: Failover works in hub when restricted to hub only stop both brokers
+    Then Verify client "client_1" fails over correctly when x "2" in hub are stopped and client broker affinity is restricted to a hub with "False" descendants
 
-    Then HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
-    And IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
-    Then JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ
-    And KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK
-
-  @FVT @DXL_AGENT_NONWIN @FAILED_VALIDATION @INVALID_IN_MCST
-  Scenario: Run Wake Up Agents and verify dxl_service.log - Debian
-    Given LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL
-    Then MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
-    And NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
-
-    Then OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-    Given PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
-    Then QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ
-    And RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR
-
-    Then SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-    And TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
-    Then UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU
-    And WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
-
-
-  @FVT @DXL_AGENT_NONWIN @ONPREM_ONLY @FAILED_VALIDATION @INVALID_IN_MCST
-  Scenario: Run Client Task and verify dxl_service.log - CentOS
-    Given I skip this scenario if ePO is not version 5.3 or ePO 5.6 and above
-    #Then I install DXLRemoteManagement extension in ePO
-
-    Then I enable timesync on client with "CentOS" "32"-bit client
-    And I enable timesync on client with "CentOS" "64"-bit client
-
-    Then I set the pre-wakeup time in the context
-    Given I execute Run Client Task via DXL with "CentOS" "32"-bit client
-    Then I download the dxl_service.log from "CentOS" "32"-bit client
-    And I search the dxl_service.log for the epo.service.datachannel string
-
-    Then I set the pre-wakeup time in the context
-    Given I execute Run Client Task via DXL with "CentOS" "64"-bit client
-    Then I download the dxl_service.log from "CentOS" "64"-bit client
-    And I search the dxl_service.log for the epo.service.datachannel string
-
-
-  @FVT @DXL_AGENT_NONWIN @ONPREM_ONLY @FAILED_VALIDATION @INVALID_IN_MCST
-  Scenario: Run Client Task and verify dxl_service.log - Debian
-    Given I skip this scenario if ePO is not version 5.3 or ePO 5.6 and above
-    #Then I install DXLRemoteManagement extension in ePO
-
-    Then I enable timesync on client with "Debian" "32"-bit client
-    And I enable timesync on client with "Debian" "64"-bit client
-
-    Then I set the pre-wakeup time in the context
-    Given I execute Run Client Task via DXL with "Debian" "32"-bit client
-    Then I download the dxl_service.log from "Debian" "32"-bit client
-    And I search the dxl_service.log for the epo.service.datachannel string
-
-    Then I set the pre-wakeup time in the context
-    Given I execute Run Client Task via DXL with "Debian" "64"-bit client
-    Then I download the dxl_service.log from "Debian" "64"-bit client
-    And I search the dxl_service.log for the epo.service.datachannel string
-
-
-  @FVT @DXL_AGENT_NONWIN @ONPREM_ONLY @FAILED_VALIDATION @INVALID_IN_MCST
-  Scenario: Run Get Repository and verify dxl_service.log - CentOS
-    Given I skip this scenario if ePO is not version 5.3
-    Then I install DXLRemoteManagement extension in ePO
-    Then I enable timesync on client with "CentOS" "32"-bit client
-    And I enable timesync on client with "CentOS" "64"-bit client
-
-    Then I set the pre-wakeup time in the context
-    Given I execute Get Repository via DXL with "CentOS" "32"-bit client
-    Then I download the dxl_service.log from "CentOS" "32"-bit client
-    And I search the dxl_service.log for the ma.service.repository string
-
-    Then I set the pre-wakeup time in the context
-    Given I execute Get Repository via DXL with "CentOS" "64"-bit client
-    Then I download the dxl_service.log from "CentOS" "64"-bit client
-    And I search the dxl_service.log for the ma.service.repository string
-
-  @FVT @DXL_AGENT_NONWIN @ONPREM_ONLY @FAILED_VALIDATION @INVALID_IN_MCST
-  Scenario: Run Get Repository and verify dxl_service.log - Debian
-    Given I skip this scenario if ePO is not version 5.3
-    Then I install DXLRemoteManagement extension in ePO
-    Then I enable timesync on client with "Debian" "32"-bit client
-    And I enable timesync on client with "Debian" "64"-bit client
-
-    Then I set the pre-wakeup time in the context
-    Given I execute Get Repository via DXL with "Debian" "32"-bit client
-    Then I download the dxl_service.log from "Debian" "32"-bit client
-    And I search the dxl_service.log for the ma.service.repository string
-
-    Then I set the pre-wakeup time in the context
-    Given I execute Get Repository via DXL with "Debian" "64"-bit client
-    Then I download the dxl_service.log from "Debian" "64"-bit client
-    And I search the dxl_service.log for the ma.service.repository string
+  @DXL_CLIENT_BROKER_AFFINITY_CLIENT_SIDE @FVT @FAILED_VALIDATION
+  Scenario: I clean up topology after Cl-Br Affinity connectedBrokerGuid Tests
+    When I create a safe hub topology
+    And I skip this scenario because "it is being used to clean up broker topology"
