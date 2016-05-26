@@ -5,6 +5,11 @@ from PyQt4.QtCore import QThread, SIGNAL
 from tables_content_manager import TableDataRepresentation
 from service_worker_thread import ServiceThread
 
+
+
+
+
+
 class MainBehaveWindow(QtGui.QTabWidget):
 
     __WINDOWS_POS_X = 300
@@ -19,14 +24,18 @@ class MainBehaveWindow(QtGui.QTabWidget):
     __EMPTY_TEXT = ""
     __APP_NAME = 'Behave Links'
     __MAIN_LABEL_TEXT = "Features Directory: "
+    __FEATURE_TABLE_ID = "feature_table"
+    __STEPS_TABLE_ID = "steps_table"
+    __STATISTICS_TABLE_ID = "statistics_table"
     __TABLE_CONFIG = {"steps_table":{"table_column_titles":"name, descripcion, scenario, code_step"},
                       "feature_table":{"table_column_titles":"name, descripcion"},
                       "statistics_table":{"table_column_titles":"name, descripcion, scenario, code_step"}
                       }
 
-    def __init__(self):
+    def __init__(self, db_service_manager):
         super(MainBehaveWindow, self).__init__()
         self.__is_feature_directory_loaded=False
+        self.__db_service_manager = db_service_manager
         self.initUI()
         self.__create_function_map_for_worker()
         self.__service_worker = ServiceThread(self._function_dictionary)
@@ -95,20 +104,25 @@ class MainBehaveWindow(QtGui.QTabWidget):
     def __create_features_tab(self):
         self.__feature_tab = QtGui.QWidget()
         features_tab_layout = QtGui.QVBoxLayout()
-        features_tab_layout.addWidget(TableDataRepresentation(None, self.__TABLE_CONFIG["feature_table"]))
+        features_tab_layout.addWidget(TableDataRepresentation(None,\
+                                                                 self.__TABLE_CONFIG[self.__FEATURE_TABLE_ID], \
+                                                                 self.__db_service_manager, \
+                                                                 self.__FEATURE_TABLE_ID \
+                                                                 )\
+                                                               )
         self.__feature_tab.setLayout(features_tab_layout)
 
     def __create_steps_tab(self):
         self.__steps_tab = QtGui.QWidget()
         step_tab_layout = QtGui.QVBoxLayout()
-        step_tab_layout.addWidget(TableDataRepresentation(None, self.__TABLE_CONFIG["steps_table"]))
+        step_tab_layout.addWidget(TableDataRepresentation(None, self.__TABLE_CONFIG[self.__STEPS_TABLE_ID],self.__db_service_manager, self.__STEPS_TABLE_ID))
         self.__steps_tab.setLayout(step_tab_layout)
 
 
     def __create_statistics_tab(self):
         self.__statistics_tab = QtGui.QWidget()
         statistics_tab_layout = QtGui.QVBoxLayout()
-        statistics_tab_layout.addWidget(TableDataRepresentation(None, self.__TABLE_CONFIG["statistics_table"]))
+        statistics_tab_layout.addWidget(TableDataRepresentation(None, self.__TABLE_CONFIG[self.__STATISTICS_TABLE_ID],self.__db_service_manager,self.__STATISTICS_TABLE_ID))
         self.__statistics_tab.setLayout(statistics_tab_layout)
 
     def __register_tab(self, tab, tab_label):
@@ -190,6 +204,7 @@ class MainBehaveWindow(QtGui.QTabWidget):
     def setTextInVerboseLabel(self, label_text):
         self.__process_label_verbose.clear()
         self.__process_label_verbose.setText(label_text)
+
 
 def main():
     app = QtGui.QApplication(sys.argv)

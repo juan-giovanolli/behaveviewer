@@ -2,10 +2,15 @@ import sys
 from PyQt4 import QtGui, QtCore
 
 class TableDataRepresentation(QtGui.QTableWidget):
+    
+    __INITIAL_TABLE_SIZE = 1
 
-    def __init__(self,data,table_config_data):
-        QtGui.QTableWidget.__init__(self,1,1)
+    def __init__(self, data, table_config_data, db_service_manager, table_id):
+        QtGui.QTableWidget.__init__(self,self.__INITIAL_TABLE_SIZE,self.__INITIAL_TABLE_SIZE)
         self.__config_table(table_config_data)
+        self.__db_service_manager =  db_service_manager
+        self.__table_id = table_id
+        
         self.updateData(data)
 
     def __config_table(self, table_config_data):
@@ -14,9 +19,9 @@ class TableDataRepresentation(QtGui.QTableWidget):
 
     def updateData(self, data):
         if (self.__check_data_table(data)):
-            print "llenado tabla"
+            print "llenando tabla {}".format(self.__table_id)
         else:
-            print "Datos Vacios"
+            print "Datos Vacios {}".format(self.__table_id)
 
     def __check_data_table(self, data):
         return_value = True
@@ -26,9 +31,10 @@ class TableDataRepresentation(QtGui.QTableWidget):
             return_value= False
         else:
              pass
-
         return return_value
 
+    def fill_table(self):
+        pass
 
 def main():
     table_config_data = {"table_title":"steps","table_column_titles":"name, descripcion, scenario, code_step"}
