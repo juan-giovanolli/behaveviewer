@@ -14,10 +14,10 @@ class ServiceThread(QThread):
     def run(self):
         print "Ejecutando Hilo"
         if self._function_map is not None:
-            _process_worker()
+            self._process_worker()
 
 
-    def _process_worker():
+    def _process_worker(self):
         for key, values in self._function_map.iteritems():
             if key == "PARSING_DIRECTORY":
                 values(self._reference_path)
