@@ -35,4 +35,11 @@ class EntityService(object):
     
     def find_features(self, expression):
         return Feature.select().where(Feature.name ** ('%' + expression + '%'))
+
+    
+    def find_scenarios(self, expression):
+        return Scenario.select().where(Scenario.name ** ('%' + expression + '%'))
+    
+    def find_steps(self, expression):
+        return Step.select().where(Step.name ** ('%' + expression + '%'))
     
