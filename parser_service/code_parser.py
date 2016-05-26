@@ -23,9 +23,9 @@ class CodeParser(object):
         with open(fileName) as fiLe:
             while line:
                 line = fiLe.readline()
-                #print line
                 if line.strip().startswith('@step'):
-                    print CodeStep.create(name=re.search('\'(.*)\'', line.strip()).group(1))
+                    print CodeStep.create(name=re.search('\'(.*)\'', line.strip()).group(1), fileName=fileName)
                     print line
     
-    def parseDir(self, path):   
+    def parseDir(self, path):
+        
