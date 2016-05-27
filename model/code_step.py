@@ -14,6 +14,7 @@ class CodeStep(Model):
     '''
     name = CharField()
     description = CharField(null=True)
+    file_name = CharField(null=True)
     
     class Meta:
         database = db
