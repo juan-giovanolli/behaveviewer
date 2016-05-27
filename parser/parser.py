@@ -122,6 +122,8 @@ class Parser:
         result = not self.parser_stack.contains(FEATURE)
         if result:
             self.parser_stack.push(FEATURE, tokens[1:])
+        else:
+            raise ValueError("Reusing parser object for a different feature is not supported")
         return result
 
 
@@ -131,7 +133,7 @@ class Parser:
         if result:
             self.parser_stack.push(BACKGROUND, '')
         else:
-            raise RuntimeError("There is more than one background in the feature.")
+            raise ValueError("There is more than one background in the feature.")
         return result
 
 
@@ -139,7 +141,8 @@ class Parser:
         end_scenario = self.parser_stack.contains(TAG) or self.parser_stack.contains(SCENARIO) or self.EOF
         if end_scenario:
             self.scenario_ready = True
-        self.parser_stack.push(TAG, [tk[1:] for tk in tokens ])
+        else: #BUG: just works fine for hte first scenario
+            self.parser_stack.push(TAG, [tk[1:] for tk in tokens ])
 
 
     def _handle_scenario(self, tokens):
@@ -155,7 +158,7 @@ class Parser:
 
     def _process_scenario(self):
         parsed_scenario = Stack()
-        while self.parser_stack.contains(TAG) or self.parser_stack.contains(SCENARIO): #TODO: CHECK #scenario in case that no tags are used
+        while self.parser_stack.contains(TAG) or self.parser_stack.contains(SCENARIO): 
             last_token, text = self.parser_stack.pop()
             parsed_scenario.push(last_token, text)
         if self.parser_stack.contains(BACKGROUND):
