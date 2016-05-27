@@ -5,6 +5,8 @@ Created on 26 de may. de 2016
 '''
 from model.code_step import CodeStep
 import re
+from os import walk
+from os.path import isfile, join, basename
 
 class CodeParser(object):
     '''
@@ -23,9 +25,18 @@ class CodeParser(object):
         with open(fileName) as fiLe:
             while line:
                 line = fiLe.readline()
-                if line.strip().startswith('@step'):
-                    print CodeStep.create(name=re.search('\'(.*)\'', line.strip()).group(1), fileName=fileName)
-                    print line
+                if line.strip().startswith('@step') or line.strip().startswith('@Step'):
+                    
+                    print re.search('(\'|\")(.*)(\'|\")', line.strip()).group(2)
+                    print CodeStep.create(name=re.search('(\'|\")(.*)(\'|\")', line.strip()).group(2), file_name=fileName)
+                    
     
     def parseDir(self, path):
-        
+
+        # traverse root directory, and list directories as dirs and files as files
+        for root, dirs, files in walk(path):
+            path = root.split('/')
+            ##print root
+            for file in files:
+                print join(root, file)
+                self.parseFile(join(root, file))

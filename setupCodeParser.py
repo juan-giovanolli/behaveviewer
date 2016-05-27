@@ -8,4 +8,4 @@ from config.setup import Setup
 
 if __name__ == '__main__':
     Setup({'reset_db':True, 'dummy_db': False})
-    CodeParser().parseFile('C:\\Users\\Juan\\dev\\workspace\\qa_framework\\project\\features\\steps\\common\\auto_agent.py')
+    CodeParser().parseDir('C:\\Users\\Juan\\dev\\workspace\\qa_framework\\project\\features\\steps')
