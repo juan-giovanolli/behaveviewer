@@ -44,3 +44,8 @@ if __name__ == '__main__':
     Setup({'reset_db':True, 'dummy_db':False})
     parser = ParserHelper("behave.example")
     parser.load_scenarios()
+
+
+    query = Scenario().select()
+    for result in query:
+        print result.name

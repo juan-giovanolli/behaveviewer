@@ -46,7 +46,6 @@ class Parser:
         self._parser_stack = Stack()
         self._parsed_scenario = Stack()
         self._scenario_ready = False
-        self._has_background = False
         self._EOF = False    #Needed to analize last scenario
         self._parsed_feature = Stack()
         self._feature_processed = False
@@ -67,6 +66,7 @@ class Parser:
                     self._analize_line(line)
             self._EOF = True
             self._analize_line(line)
+            list_of_scenarios.append(self._process_scenario())
         return list_of_scenarios, self._parsed_feature.to_list()
             
 
@@ -129,7 +129,6 @@ class Parser:
 
 
     def _handle_background(self, tokens):
-        self._has_background = True
         result = not self._parser_stack.contains(BACKGROUND)
         if result:
             self._parser_stack.push(BACKGROUND, [])
@@ -177,6 +176,9 @@ class Parser:
 
 
     def _process_scenario(self):
+        """
+        Returns a list with the scenario elements in this order: tags, scenario, steps
+        """
         parsed_scenario = Stack()
         last_token, text = self._parser_stack.pop()
         if last_token.lower() == SCENARIO or last_token.lower() == TAG:
@@ -188,7 +190,6 @@ class Parser:
         #parsed_scenario.push(last_token, text) # TODO: check why this is not needed
         self._process_feature()
         self._scenario_ready = False
-        #Returns a list with this order: tags, scenario, steps
         self._parser_stack.push(temp[0], temp[1]) #TODO: fix this: temp is for the tag or scenario that triggered the parse of scenario
         return parsed_scenario.to_list()
 
