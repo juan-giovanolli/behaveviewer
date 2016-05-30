@@ -1,8 +1,12 @@
 from model.feature import Feature
 from model.scenario import Scenario
+from model.step import Step
 from model.tag import Tag
+from model.code_step import CodeStep
 from peewee import SqliteDatabase
 from parser.parser_helper import ParserHelper
+from config.setup import Setup
+
 import sys
 from PyQt4 import QtGui, QtCore
 from config.setup import Setup
@@ -14,7 +18,7 @@ db = SqliteDatabase('gherkin.db')
 def test():
     db.connect()
     ScenarioTagsTable = Scenario.tags.get_through_model()
-    db.create_tables([Tag, code_step, Feature, Scenario, Step, ScenarioTagsTable], safe=True)
+    db.create_tables([Tag, CodeStep, Feature, Scenario, Step, ScenarioTagsTable], safe=True)
     
     newFeature = Feature.create(name='Feature1')   
     newFeature = Feature.create(name='blaCONsultasdvsdv')
@@ -37,23 +41,6 @@ def main():
     sys.exit(app.exec_())
 
 if __name__ == '__main__':
-    db.connect()
-    db.create_tables([Feature], safe=True)
-    db.create_tables([Tag], safe=True)
-    db.create_tables([Scenario], safe=True)
-
+    Setup({'reset_db':True, 'dummy_db':False})
     parser = ParserHelper("behave.example")
-
     parser.load_scenarios()
-
-    feature_query = Feature.select()
-    tag_query = Tag.select()
-    scenario_query = Scenario.select()
-
-    for ft in feature_query:
-        print ft.name, ft.id
-    for tag in tag_query:
-        print tag.name, tag.id
-    for scen in tag_query:
-        print scen.name, scen.id
-    main()
