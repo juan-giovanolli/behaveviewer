@@ -67,7 +67,6 @@ class Parser:
                     self._analize_line(line)
             self._EOF = True
             self._analize_line(line)
-        print list_of_scenarios, self._parsed_feature.to_list()
         return list_of_scenarios, self._parsed_feature.to_list()
             
 

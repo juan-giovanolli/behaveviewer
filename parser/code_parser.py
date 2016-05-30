@@ -28,7 +28,10 @@ class CodeParser(object):
                 if line.strip().startswith('@step') or line.strip().startswith('@Step'):
                     
                     print re.search('(\'|\")(.*)(\'|\")', line.strip()).group(2)
-                    print CodeStep.create(name=re.search('(\'|\")(.*)(\'|\")', line.strip()).group(2), file_name=fileName)
+                    name = re.search('(\'|\")(.*)(\'|\")', line.strip()).group(2)
+                    clean_name = re.sub('(\"{[^}]*}\")','', name)
+                    print clean_name
+                    print CodeStep.create(name=name, clean_name=clean_name, file_name=fileName)
                     
     
     def parseDir(self, path):
@@ -40,3 +43,5 @@ class CodeParser(object):
             for file in files:
                 print join(root, file)
                 self.parseFile(join(root, file))
+                
+    

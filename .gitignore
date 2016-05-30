@@ -2,3 +2,6 @@
 /.pydevproject
 /gherkin.db
 *.pyc
+/new.sql
+/scrap
+/parser2/

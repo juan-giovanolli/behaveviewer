@@ -16,7 +16,7 @@ class ParserHelper:
     """
 
     def __init__(self, filename):
-        self.CODESTEP = CodeStep.create(name="CODE STEP PRUEBA")
+        self.CODESTEP = CodeStep.create(name="CODE STEP PRUEBA", clean_name='')
         self._tags = []
         print "Parsing file: "  + filename
         self._parsed_data = Parser().parse_file(filename)
@@ -68,7 +68,7 @@ class ParserHelper:
 
 
     def _create_step(self, name, scenario, code_step, step_type):
-        pass
+        step = Step.create(name=name, scenario=scenario, code_step=code_step, step_type= step_type)
 
 
     def load_scenarios(self):
@@ -81,6 +81,11 @@ class ParserHelper:
             scenario_name = ' '.join(scen[0][1])
             tags = self._create_tags(scen)
             scenario = self._create_scenario(name=scenario_name, is_background=False, tags=tags, feature=feature)
+            steps =  scen[2:]
+            for step in steps:
+                step_type = step[0]
+                step_name = ' '.join(step[1])
+                self._create_step(step_name, scenario, self.CODESTEP, step_type)
 
 
 if __name__ == '__main__':
