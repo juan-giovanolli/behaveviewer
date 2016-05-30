@@ -111,7 +111,10 @@ class Parser:
 
 
     def _is_scenario(self, tokens):
-        return tokens[0].lower() == SCENARIO
+        token = tokens[0].lower()
+        if token == 'scenario': #TODO change this for support to scenario outlines and tables
+            token += ':'
+        return token == SCENARIO
 
 
     def _is_step(self, tokens):
