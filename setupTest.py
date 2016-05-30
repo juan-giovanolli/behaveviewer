@@ -7,7 +7,7 @@ from config.setup import Setup
 from service.entity_service import EntityService
 
 if __name__ == '__main__':
-    Setup({'reset_db':True, 'dummy_db':True})
+    Setup({'reset_db':True, 'dummy_db':False})
     query = EntityService().find_most_used_steps(10)
     print query
     for result in query:
