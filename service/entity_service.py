@@ -46,4 +46,8 @@ class EntityService(object):
     def find_code_step(self, step):
         import re
         clean_step_name = re.sub('(\"[^\"]*\")','', step)
-        return CodeStep.get(CodeStep.clean_name == clean_step_name)
+        try:
+        
+            return CodeStep.get(CodeStep.clean_name == clean_step_name)
+        except:
+            return None
