@@ -78,7 +78,7 @@ class ParserHelper:
         feature = self._load_feature_with_background()
         list_of_scenarios = self._parsed_data[0]
         for scen in list_of_scenarios:
-            scenario_name = ' '.join(scen[0][1])
+            scenario_name = ' '.join(scen[0][1]) if scen[0][0] == 'scenario:' else ' '.join(scen[1][1])
             tags = self._create_tags(scen)
             scenario = self._create_scenario(name=scenario_name, is_background=False, tags=tags, feature=feature)
             steps =  scen[2:]

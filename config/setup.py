@@ -20,8 +20,10 @@ class Setup(object):
     def __init__(self, params):
         if isinstance(params, dict):
             if params['reset_db'] != False:
+                print 'Running setup'
                 self.reset_db()
             if params['dummy_db'] != False:
+                print 'Creating dummy database'
                 self.populate_db()
                 
     
