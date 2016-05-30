@@ -1,19 +1,29 @@
 # Created by zlaubste at 9/4/2015
 Feature: FEATURE
 
-  @DXL_CLIENT_BROKER_AFFINITY_CLIENT_SIDE @FVT @FAILED_VALIDATION
+  Background:
+    Given la cosa loca
+    And la segunda cosa loca
+
+  @1sst tag
   Scenario: scen1
-    Then Verify client "client_1" fails over correctly when x "2" in hub are stopped and client broker affinity is restricted to a hub with "True" descendants
+    Then Primera cosa
 
-  @DXL_CLIENT_BROKER_AFFINITY_CLIENT_SIDE @FVT @FAILED_VALIDATION
+  @2nd tag
   Scenario: scen2
-    Then Verify client "client_1" fails over correctly when x "1" in hub are stopped and client broker affinity is restricted to a hub with "False" descendants
+    Given algo
+    when zapallula
+    Then segunda cosa
 
-  @DXL_CLIENT_BROKER_AFFINITY_CLIENT_SIDE @FVT @FAILED_VALIDATION
   Scenario: scen3
-    Then Verify client "client_1" fails over correctly when x "2" in hub are stopped and client broker affinity is restricted to a hub with "False" descendants
+    Then tercera cosa
 
-  @DXL_CLIENT_BROKER_AFFINITY_CLIENT_SIDE @FVT @FAILED_VALIDATION
+  @4th tag
   Scenario: scen4
-    When I create a safe hub topology
-    And I skip this scenario because "it is being used to clean up broker topology"
+    When cuando una cosa
+    And y la otra cosa
+
+  @5th tag
+  Scenario: scen5
+    When cuando una quelquechose
+    And y la otra quelquechose

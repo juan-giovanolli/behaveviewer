@@ -13,7 +13,8 @@ class CodeStep(Model):
     classdocs
     '''
     name = CharField()
-    description = CharField()
+    description = CharField(null=True)
+    file_name = CharField(null=True)
     
     class Meta:
         database = db

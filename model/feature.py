@@ -13,6 +13,7 @@ class Feature(Model):
     classdocs
     '''
     name = CharField()
+    description = CharField(null=True)
     
     class Meta:
         database = db
