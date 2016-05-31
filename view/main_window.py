@@ -5,8 +5,8 @@ from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import QThread, SIGNAL
 from tables_content_manager import TableDataRepresentation
 from service_worker_thread import ServiceThread
-from parser2.parser_helper import ParserHelper
-from parser2.code_parser import CodeParser 
+from parser.parser_helper import ParserHelper
+from parser.code_parser import CodeParser 
 
 
 
@@ -30,6 +30,7 @@ class MainBehaveWindow(QtGui.QTabWidget):
     __FEATURE_TABLE_ID = "feature_table"
     __STEPS_TABLE_ID = "steps_table"
     __STATISTICS_TABLE_ID = "statistics_table"
+    __DEFAULT_CONFIG_FILE = "config_behavior_viewer.conf"
 
     __TABLE_CONFIG = {"steps_table":{"table_column_titles":"name, descripcion, scenario, code_step"},
                       "feature_table":{"table_column_titles":"name, descripcion"},
@@ -39,6 +40,8 @@ class MainBehaveWindow(QtGui.QTabWidget):
     def __init__(self, db_service_manager):
         super(MainBehaveWindow, self).__init__()
         self.__is_feature_directory_loaded=False
+        self.__feature_directory_path = None
+        self.__code_parser = CodeParser()
         self.__db_service_manager = db_service_manager
         self.__step_table = TableDataRepresentation(None, self.__TABLE_CONFIG[self.__STEPS_TABLE_ID],self.__db_service_manager, self.__STEPS_TABLE_ID)
         self.__feature_table = TableDataRepresentation(None, self.__TABLE_CONFIG[self.__FEATURE_TABLE_ID], self.__db_service_manager, self.__FEATURE_TABLE_ID )
@@ -99,6 +102,10 @@ class MainBehaveWindow(QtGui.QTabWidget):
         self.__process_label_verbose=self.__create_label(self.__EMPTY_TEXT)
         self.main_tab_layout.addWidget(self.__process_label_verbose)
         self.main_tab_layout.addStretch(1)
+        boton_config["X_POS"]="300"
+        boton_config["Y_POS"]="40"
+        self.main_tab_layout.addWidget(self.__create_botton("Load Only Tables: ", self.__load_only_tables_view,boton_config))
+        self.main_tab_layout.addStretch(1)
         self.main_tab_layout.addWidget(self.__create_botton("Quit",QtCore.QCoreApplication.instance().quit,boton_config))
         self.__main_tab.setLayout(self.main_tab_layout)
 
@@ -148,12 +155,14 @@ class MainBehaveWindow(QtGui.QTabWidget):
             self.setTextInVerboseLabel("Seletcted Path : {0}".format(feature_directory_path))
             print "Path Seleccionado: {0}".format(self.__feature_directory_path)
             self.setTextInVerboseLabel("parsing directory ....")
-            if os.name == 'nt':
-                self.__feature_directory_path = unicode(self.__feature_directory_path)
+            self.__save_current_directory_to_file()
+            self.__process_directory_name()
             path_to_step = os.path.join(self.__feature_directory_path, "steps")
-            CodeParser().parseDir(path_to_step)
-            ParserHelper(self.__feature_directory_path)
+            print "path to step {}".format(path_to_step)
+            self.__code_parser.parseDir(path_to_step)
+            ParserHelper(path_to_step)
             print "parsing directory ...."
+            self.__save_current_directory_to_file()
 
 
     def creating_db_tables(self):
@@ -219,7 +228,31 @@ class MainBehaveWindow(QtGui.QTabWidget):
         self.parsing_directory()
         self.fill_view_tables_with_sql()
         self._process_terminated()
-        
+
+
+    def __save_current_directory_to_file(self):
+        with open(self.__DEFAULT_CONFIG_FILE,"w") as output_file:
+            output_file.write(self.__feature_directory_path)
+
+
+    def __load_feature_directory_from_file(self):
+        with open(self.__DEFAULT_CONFIG_FILE, 'r') as input_file:
+            self.__feature_directory_path = input_file.readlines()
+
+    def __load_only_tables_view(self):
+        if self.__feature_directory_path is None:
+            self.__load_feature_directory_from_file()
+
+        self.fill_view_tables_with_sql()
+        self._process_terminated()
+
+
+    def __reset_labels(self):
+        self.setTextInVerboseLabel("")
+
+    def __process_directory_name(self):
+        self.__feature_directory_path = unicode(self.__feature_directory_path)
+
 def main():
     app = QtGui.QApplication(sys.argv)
     ex = MainBehaveWindow()
