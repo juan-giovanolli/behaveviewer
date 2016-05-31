@@ -3,12 +3,10 @@ Created on 24 de may. de 2016
 
 @author: Juan
 '''
-from peewee import SqliteDatabase, CharField, Model, ForeignKeyField
+from peewee import CharField, Model, ForeignKeyField
 from model.scenario import Scenario
 from model.code_step import CodeStep
-
-
-db = SqliteDatabase('gherkin.db')
+from config.setup import db
 
 class Step(Model):
     '''
@@ -23,3 +21,4 @@ class Step(Model):
     
     class Meta:
         database = db
+        db_table = 'step'
