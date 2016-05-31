@@ -5,7 +5,8 @@ Created on 26 de may. de 2016
 '''
 
 from peewee import SqliteDatabase
-db = SqliteDatabase(':memory:')
+db = SqliteDatabase('gherkin.db')
+db.set_autocommit(False)
 from model.scenario import Scenario
 from model.tag import Tag
 from model.code_step import CodeStep
