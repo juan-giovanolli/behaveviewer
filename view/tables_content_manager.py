@@ -59,7 +59,8 @@ class TableDataRepresentation(QtGui.QTableWidget):
             description = self.__check_string_is_not_None(rows.description)
             name = self.__check_string_is_not_None(rows.name)
             scenario = self.__check_string_is_not_None(rows.scenario.name)
-            codeStep = self.__check_string_is_not_None(rows.codeStep.name)
+            codeStepName = None if rows.code_step == None else rows.code_step.name
+            codeStep = self.__check_string_is_not_None(codeStepName)
             self.insertRow(index)
             self.setItem(index, 0, QtGui.QTableWidgetItem(name))
             self.setItem(index, 1, QtGui.QTableWidgetItem(description))
@@ -69,11 +70,13 @@ class TableDataRepresentation(QtGui.QTableWidget):
 
 
     def __populate_table_statistics(self, query):
+        print "populate table stastistics"
         index = self.rowCount()
         name = self.__EMPTY_STRING
         step_count = self.__EMPTY_STRING
         for rows in query:
             name = self.__check_string_is_not_None(rows.name)
+            print "row name: {}".format(name)
             step_count = self.__check_string_is_not_None(str(rows.count))
             self.insertRow(index)
             self.setItem(index, 0, QtGui.QTableWidgetItem(name))
