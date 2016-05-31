@@ -34,6 +34,8 @@ class ParserHelper:
             print "Parsing file: "  + filename
             self._parsed_data = Parser().parse_file(filename)
             self._feature = ''
+            self._tags_cache = {}
+
         
     def _load_feature_with_background(self):
         feature_and_background = self._parsed_data[1]
@@ -63,12 +65,12 @@ class ParserHelper:
         for elem in scenario:
             if elem[0] == 'tag':
                 for tag in elem[1]:
-                    try:
-                        db_name = Tag.get(Tag.name == tag).name
-                    except:
-                        db_name = ''
-                    if tag != db_name:
-                        tags.append(Tag.create(name=tag, description=''))
+                    if tag not in self._tags_cache:
+                        new_tag = Tag.create(name=tag, description='')
+                        self._tags_cache[tag] = new_tag
+                    else:
+                        new_tag = self._tags_cache[tag]
+                    tags.append(new_tag)
         return tags
 
 
