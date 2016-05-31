@@ -1,3 +1,6 @@
 /.project
 /.pydevproject
 /gherkin.db
+*.pyc
+env
+*.orig
