@@ -1,10 +1,12 @@
 import sys
+import os.path
 import time
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import QThread, SIGNAL
 from tables_content_manager import TableDataRepresentation
 from service_worker_thread import ServiceThread
-
+from parser2.parser_helper import ParserHelper
+from parser2.code_parser import CodeParser 
 
 
 
@@ -132,19 +134,24 @@ class MainBehaveWindow(QtGui.QTabWidget):
     def __show_dialog_find_files(self):
         options = QtGui.QFileDialog.DontResolveSymlinks | QtGui.QFileDialog.ShowDirsOnly
         #TODO: change this to make this code multi-platform
-        feature_directory_path = None
-        feature_directory_path = QtGui.QFileDialog.getExistingDirectory(self, 'SelectDirectory',\
+        self.__feature_directory_path = None
+        self.__feature_directory_path = QtGui.QFileDialog.getExistingDirectory(self, 'SelectDirectory',\
                                                                 self.__CURRENT_PATH_LINUX,\
                                                                 options)
-        self.__service_worker.start()
+        #self.__service_worker.start()
+        self.__run_sequencial()
 
 
     def parsing_directory(self,feature_directory_path = None):
         #TODO: Crear variable que setea estado de la aplicacion
-        if feature_directory_path is not None:
+        if self.__feature_directory_path is not None:
             self.setTextInVerboseLabel("Seletcted Path : {0}".format(feature_directory_path))
-            print "Path Seleccionado: {0}".format(feature_directory_path)
+            print "Path Seleccionado: {0}".format(self.__feature_directory_path)
             self.setTextInVerboseLabel("parsing directory ....")
+            path_to_step = os.path.join('C:\\Users\\Juan\\dev\\workspace\\qa_framework\\project\\features', "steps")
+            CodeParser().parseDir(path_to_step)
+        
+            ParserHelper('C:\\Users\\Juan\\dev\\workspace\\qa_framework\\project\\features')
             print "parsing directory ...."
 
 
@@ -180,7 +187,7 @@ class MainBehaveWindow(QtGui.QTabWidget):
         self.setTextInVerboseLabel("__fill_statistics_table")
         data=self.__statistics_table.extract_data_fom_sql_table()
         self.__statistics_table.updateData(data)
-        print "__fill_statistics_table"
+        print "finalizaccion __fill_statistics_table"
 
 
     def __create_tabs(self):
@@ -206,6 +213,12 @@ class MainBehaveWindow(QtGui.QTabWidget):
         self.__process_label_verbose.setText(label_text)
 
 
+
+    def __run_sequencial(self):
+        self.parsing_directory()
+        self.fill_view_tables_with_sql()
+        self._process_terminated()
+        
 def main():
     app = QtGui.QApplication(sys.argv)
     ex = MainBehaveWindow()

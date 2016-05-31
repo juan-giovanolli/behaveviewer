@@ -4,8 +4,10 @@ from model.tag import Tag
 from model.step import Step
 from model.code_step import CodeStep
 from parser import Parser
+from service.entity_service import EntityService
 import parser_constants
-
+from os import walk
+from os.path import isfile, join, basename
 
 
 
@@ -16,13 +18,25 @@ class ParserHelper:
     """
 
     def __init__(self, filename):
-        self.CODESTEP = CodeStep.create(name="CODE STEP PRUEBA", clean_name='')
-        self._tags = []
-        print "Parsing file: "  + filename
-        self._parsed_data = Parser().parse_file(filename)
-        self._feature = ''
+        if not isfile(filename):
+            for root, dirs, files in walk(filename):
+                path = root.split('/')
+                ##print root
+                for file in files:
+                    print join(root, file)
+                    ##self.parseFile(join(root, file))
+                    if file.endswith('.feature') and file not in('ipe_epo_remotecmd.feature','dxl_broker_extension_l10n.feature'):
+                        parser = ParserHelper(join(root, file))
+                        parser.load_scenarios()
+        else:
+            self.CODESTEP = CodeStep.create(name="CODE STEP PRUEBA", clean_name='')
+            self._tags = []
+            print "Parsing file: "  + filename
+            self._parsed_data = Parser().parse_file(filename)
+            self._feature = ''
+            self._tags_cache = {}
 
-
+        
     def _load_feature_with_background(self):
         feature_and_background = self._parsed_data[1]
         feature = feature_and_background[0]
@@ -39,7 +53,7 @@ class ParserHelper:
             background = feature_and_background[1]
             scenario = self._create_scenario('background', True, [], feature)
             for step in background[1]:
-                self._create_step(' '.join(step[1]), scenario, self.CODESTEP, step[0])
+                self._create_step(' '.join(step[1]), scenario, step[0])
         return feature
 
 
@@ -51,12 +65,12 @@ class ParserHelper:
         for elem in scenario:
             if elem[0] == 'tag':
                 for tag in elem[1]:
-                    try:
-                        db_name = Tag.get(Tag.name == tag).name
-                    except:
-                        db_name = ''
-                    if tag != db_name:
-                        tags.append(Tag.create(name=tag, description=''))
+                    if tag not in self._tags_cache:
+                        new_tag = Tag.create(name=tag, description='')
+                        self._tags_cache[tag] = new_tag
+                    else:
+                        new_tag = self._tags_cache[tag]
+                    tags.append(new_tag)
         return tags
 
 
@@ -67,8 +81,9 @@ class ParserHelper:
         return scenario
 
 
-    def _create_step(self, name, scenario, code_step, step_type):
-        step = Step.create(name=name, scenario=scenario, code_step=code_step, step_type= step_type)
+    def _create_step(self, name, scenario, step_type):
+        codeStep = EntityService().find_code_step(name)
+        Step.create(name=name, scenario=scenario, code_step=codeStep, step_type= step_type)
 
 
     def load_scenarios(self):
@@ -85,9 +100,4 @@ class ParserHelper:
             for step in steps:
                 step_type = step[0]
                 step_name = ' '.join(step[1])
-                self._create_step(step_name, scenario, self.CODESTEP, step_type)
-
-
-if __name__ == '__main__':
-    parser = ParserHelper("behave.example")
-    parser.load_scenarios()
+                self._create_step(step_name, scenario, step_type)

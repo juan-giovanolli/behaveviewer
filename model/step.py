@@ -18,7 +18,7 @@ class Step(Model):
     description = CharField(null=True)
     step_type = CharField()
     scenario = ForeignKeyField(Scenario, related_name='steps')
-    code_step = ForeignKeyField(CodeStep, related_name='steps')
+    code_step = ForeignKeyField(CodeStep, related_name='steps', null=True)
     
     
     class Meta:
