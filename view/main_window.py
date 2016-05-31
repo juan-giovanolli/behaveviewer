@@ -7,7 +7,7 @@ from tables_content_manager import TableDataRepresentation
 from service_worker_thread import ServiceThread
 from parser2.parser_helper import ParserHelper
 from parser2.code_parser import CodeParser 
-
+from config.setup import db
 
 
 
@@ -152,7 +152,9 @@ class MainBehaveWindow(QtGui.QTabWidget):
                 self.__feature_directory_path = unicode(self.__feature_directory_path)
             path_to_step = os.path.join(self.__feature_directory_path, "steps")
             CodeParser().parseDir(path_to_step)
+            db.begin()
             ParserHelper(self.__feature_directory_path)
+            db.commit()
             print "parsing directory ...."
 
 
