@@ -1,5 +1,5 @@
 import sys
-import os.path
+import os
 import time
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import QThread, SIGNAL
@@ -148,10 +148,11 @@ class MainBehaveWindow(QtGui.QTabWidget):
             self.setTextInVerboseLabel("Seletcted Path : {0}".format(feature_directory_path))
             print "Path Seleccionado: {0}".format(self.__feature_directory_path)
             self.setTextInVerboseLabel("parsing directory ....")
-            path_to_step = os.path.join('C:\\Users\\Juan\\dev\\workspace\\qa_framework\\project\\features', "steps")
+            if os.name == 'nt':
+                self.__feature_directory_path = unicode(self.__feature_directory_path)
+            path_to_step = os.path.join(self.__feature_directory_path, "steps")
             CodeParser().parseDir(path_to_step)
-        
-            ParserHelper('C:\\Users\\Juan\\dev\\workspace\\qa_framework\\project\\features')
+            ParserHelper(self.__feature_directory_path)
             print "parsing directory ...."
 
 
