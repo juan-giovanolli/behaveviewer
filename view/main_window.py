@@ -1,5 +1,5 @@
 import sys
-import os.path
+import os
 import time
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import QThread, SIGNAL
@@ -68,7 +68,6 @@ class MainBehaveWindow(QtGui.QTabWidget):
         botton.resize( botton.sizeHint())
         botton.move( int(config_dict["X_POS"]), int(config_dict["Y_POS"]))
         return botton
-
 
     def __load_feature_directory(self):
         print "loading features directory"
