@@ -42,7 +42,7 @@ class EntityService(object):
 
     def find_steps(self, expression, tag_id=None):
         ScenarioTagsTable = Scenario.tags.get_through_model()
-        query = Step.select(Step, ScenarioTagsTable)\
+        query = Step.select(Step, ScenarioTagsTable, Tag)\
             .join(Scenario)\
             .join(ScenarioTagsTable)\
             .join(Tag)
