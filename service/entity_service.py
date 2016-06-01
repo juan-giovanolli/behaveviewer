@@ -8,7 +8,7 @@ from model.feature import Feature
 from model.code_step import CodeStep
 from model.step import Step
 from peewee import fn
-
+ScenarioTagsTable = Scenario.tags.get_through_model()
 class EntityService(object):
     '''
     classdocs
@@ -36,18 +36,21 @@ class EntityService(object):
     def find_features(self, expression):
         return Feature.select().where(Feature.name ** ('%' + expression + '%'))
 
-    
     def find_scenarios(self, expression):
         return Scenario.select().where(Scenario.name ** ('%' + expression + '%'))
     
-    def find_steps(self, expression):
-        return Step.select().where(Step.name ** ('%' + expression + '%'))
+    def find_steps(self, expression, tag_id=None):
+        query = Step.select(Step, ScenarioTagsTable)\
+            .join(Scenario)\
+            .join(ScenarioTagsTable)\
+            .where(Step.name ** ('%' + expression + '%'))
+        print query
+        return query
     
     def find_code_step(self, step):
         import re
         clean_step_name = re.sub('(\"[^\"]*\")','', step)
         try:
-        
             return CodeStep.get(CodeStep.clean_name == clean_step_name)
         except:
             return None
