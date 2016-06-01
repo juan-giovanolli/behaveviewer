@@ -18,6 +18,8 @@ if __name__ == '__main__':
     ParserHelper('C:\\Users\\Juan\\dev\\workspace\\qa_framework\\project\\features')
     db.commit()
     query = EntityService().find_steps('',1)
-   # for step in query:
-      #  print step.name
+    for step in query:
+        print step.id, step.name
+        for tag in step.scenario.tags:
+            print tag.name
 

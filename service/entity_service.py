@@ -42,12 +42,10 @@ class EntityService(object):
 
     def find_steps(self, expression, tag_id=None):
         ScenarioTagsTable = Scenario.tags.get_through_model()
-        query = Step.select(Step, ScenarioTagsTable)\
-            .join(Scenario)\
-            .join(ScenarioTagsTable)\
-            .join(Tag)
+        query = Step.select(Step)\
+            .join(Scenario)
         if tag_id is not None:
-            query = query.where(Step.name ** ('%' + str(expression) + '%'), Tag.id == tag_id)
+            query = query.join(ScenarioTagsTable).join(Tag).where(Step.name ** ('%' + str(expression) + '%'), Tag.id == tag_id)
         else:
             query = query.where(Step.name ** ('%' + str(expression) + '%'))
         return query
