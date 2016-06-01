@@ -19,19 +19,18 @@ class CodeParser(object):
         Constructor
         '''
 
-    def parseFile(self, fileName):
+    def parseFile(self, fileName=None):
         line = 'q'
         with open(fileName) as fiLe:
             while line:
                 line = fiLe.readline()
                 if line.strip().startswith('@step') or line.strip().startswith('@Step'):
-
                     name = re.search('(\'|\")(.*)(\'|\")', line.strip()).group(2)
                     clean_name = re.sub('(\"{[^}]*}\")', '', name)
-                    print CodeStep.create(name=name, clean_name=clean_name, file_name=fileName)
+                    CodeStep.create(name=name, clean_name=clean_name, file_name=fileName)
 
-    def parseDir(self, path):
-
+    def parseDir(self, path=None):
+        assert(path is not None)
         # traverse root directory, and list directories as dirs and files as
         # files
         for root, dirs, files in walk(path):
