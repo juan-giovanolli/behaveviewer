@@ -54,6 +54,8 @@ class TableDataRepresentation(QtGui.QTableWidget):
             self.__populate_table_statistics(query)
         self.setSortingEnabled(True)
 
+
+
     def __populate_table_feature(self, query):
         index = self.rowCount()
         description = self.__EMPTY_STRING
@@ -72,19 +74,27 @@ class TableDataRepresentation(QtGui.QTableWidget):
         scenario = self.__EMPTY_STRING
         codeStep = self.__EMPTY_STRING
         name = self.__EMPTY_STRING
+        tags_fields = self.__EMPTY_STRING
         for rows in query:
             description = self.__check_string_is_not_None(rows.description)
             name = self.__check_string_is_not_None(rows.name)
             scenario = self.__check_string_is_not_None(rows.scenario.name)
             codeStepName = None if rows.code_step is None else rows.code_step.name
             codeStep = self.__check_string_is_not_None(codeStepName)
+            tags_fields = self.__check_string_is_not_None(self.__extract_tag_from_querry(rows))
             self.insertRow(index)
-            self.setItem(index, 0, self.__createTableItem(name, QtCore.Qt.ItemIsEditable))
-            self.setItem(index, 1, self.__createTableItem(description, QtCore.Qt.ItemIsEditable))
-            self.setItem(index, 2, self.__createTableItem(scenario, QtCore.Qt.ItemIsEditable))
+            self.setItem(index, 0, self.__createTableItem( name, QtCore.Qt.ItemIsEditable))
+            self.setItem(index, 1, self.__createTableItem( description, QtCore.Qt.ItemIsEditable))
+            self.setItem(index, 2, self.__createTableItem( scenario, QtCore.Qt.ItemIsEditable))
             self.setItem(index, 3, self.__createTableItem( codeStep, QtCore.Qt.ItemIsEditable))
+            self.setItem(index, 4, self.__createTableItem( tags_fields, QtCore.Qt.ItemIsEditable))
             index +=1
 
+    def __extract_tag_from_querry(self,query):
+        tags_fields = self.__EMPTY_STRING
+        for tag in query.scenario.tags:
+                tags_fields += " "+tag.name
+        return tags_fields
 
     def __populate_table_statistics(self, query):
         print "populate table stastistics"
