@@ -6,6 +6,7 @@ from tables_content_manager import TableDataRepresentation
 from service_worker_thread import ServiceThread
 from gherkin_parser.parser_helper import ParserHelper
 from gherkin_parser.code_parser import CodeParser
+from config.setup import db
 
 
 class MainBehaveWindow(QtGui.QTabWidget):
@@ -145,16 +146,17 @@ class MainBehaveWindow(QtGui.QTabWidget):
             self.__save_current_directory_to_file()
             self.__process_directory_name()
             path_to_step = os.path.join(self.__feature_directory_path, "steps")
+            db.begin()
             self.__code_parser.parseDir(path_to_step)
-            ParserHelper(path_to_step)
+            ParserHelper(self.__feature_directory_path)
+            db.commit()
+            print "parsing directory ...."
             self.__save_current_directory_to_file()
 
     def creating_db_tables(self):
         self.setTextInVerboseLabel("create DataBase tables .....")
 
-
     def fill_view_tables_with_sql(self):
-
         self.setTextInVerboseLabel("Filling View tables from SQL Sentences.........")
         self.__fill_steps_table()
         self.__fill_feature_table()
@@ -165,18 +167,15 @@ class MainBehaveWindow(QtGui.QTabWidget):
         data = self.__step_table.extract_data_fom_sql_table()
         self.__step_table.updateData(data)
 
-
     def __fill_feature_table(self):
         self.setTextInVerboseLabel("__fill_feature_table")
         data = self.__feature_table.extract_data_fom_sql_table()
         self.__feature_table.updateData(data)
 
-
     def __fill_statistics_table(self):
         self.setTextInVerboseLabel("__fill_statistics_table")
         data = self.__statistics_table.extract_data_fom_sql_table()
         self.__statistics_table.updateData(data)
-
 
     def __create_tabs(self):
         self.__create_main_tab()

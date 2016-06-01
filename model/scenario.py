@@ -3,14 +3,12 @@ Created on 24 de may. de 2016
 
 @author: Juan
 '''
-from peewee import SqliteDatabase, CharField, Model, ForeignKeyField,\
+from peewee import CharField, Model, ForeignKeyField,\
     BooleanField
 from model.feature import Feature
 from model.tag import Tag
 from playhouse.fields import ManyToManyField
-
-
-db = SqliteDatabase('gherkin.db')
+from config.setup import db
 
 
 class Scenario(Model):
@@ -25,3 +23,4 @@ class Scenario(Model):
 
     class Meta:
         database = db
+        db_table = 'scenario'
