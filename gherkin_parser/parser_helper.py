@@ -31,6 +31,13 @@ class ParserHelper:
             self._parsed_data = Parser().parse_file(filename)
             self._feature = ''
             self._tags_cache = {}
+            self._fill_cache_with_existing_tags()
+
+    def _fill_cache_with_existing_tags(self):
+        tag = Tag()
+        tags = tag.select()
+        for tg in tags:
+            self._tags_cache[tg.name] = tg
 
     def _load_feature_with_background(self):
         feature_and_background = self._parsed_data[1]
