@@ -8,12 +8,13 @@ from peewee import SqliteDatabase, CharField, Model
 
 db = SqliteDatabase('gherkin.db')
 
+
 class Tag(Model):
     '''
     classdocs
     '''
     name = CharField()
     description = CharField(null=True)
-    
+
     class Meta:
         database = db

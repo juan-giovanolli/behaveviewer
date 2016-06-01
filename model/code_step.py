@@ -8,6 +8,7 @@ from peewee import SqliteDatabase, CharField, Model
 
 db = SqliteDatabase('gherkin.db')
 
+
 class CodeStep(Model):
     '''
     classdocs
@@ -16,6 +17,6 @@ class CodeStep(Model):
     clean_name = CharField()
     description = CharField(null=True)
     file_name = CharField(null=True)
-    
+
     class Meta:
         database = db

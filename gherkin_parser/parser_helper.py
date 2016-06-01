@@ -2,12 +2,11 @@ from model.feature import Feature
 from model.scenario import Scenario
 from model.tag import Tag
 from model.step import Step
-from model.code_step import CodeStep
 from gherkin_parser import Parser
 from service.entity_service import EntityService
 import parser_constants
 from os import walk
-from os.path import isfile, join, basename
+from os.path import isfile, join
 
 
 class ParserHelper:
@@ -25,7 +24,6 @@ class ParserHelper:
                         parser = ParserHelper(join(root, file))
                         parser.load_scenarios()
         else:
-            self.CODESTEP = CodeStep.create(name="CODE STEP PRUEBA", clean_name='')
             self._tags = []
             print "Parsing file: " + filename
             self._parsed_data = Parser().parse_file(filename)
@@ -46,7 +44,7 @@ class ParserHelper:
             feature = Feature.create(name=feature_name)
         if len(feature_and_background) > 1:
             background = feature_and_background[1]
-            scenario = self._create_scenario('background', True, [], feature)
+            scenario = self._create_scenario(parser_constants.BACKGROUND, True, [], feature)
             for step in background[1]:
                 self._create_step(' '.join(step[1]), scenario, step[0])
         return feature
@@ -84,7 +82,7 @@ class ParserHelper:
         feature = self._load_feature_with_background()
         list_of_scenarios = self._parsed_data[0]
         for scen in list_of_scenarios:
-            scenario_name = ' '.join(scen[0][1]) if scen[0][0] == 'scenario:' else ' '.join(scen[1][1])
+            scenario_name = ' '.join(scen[0][1]) if scen[0][0] == parser_constants.SCENARIO_MARK else ' '.join(scen[1][1])
             tags = self._create_tags(scen)
             scenario = self._create_scenario(name=scenario_name, is_background=False, tags=tags, feature=feature)
             steps = scen[2:]

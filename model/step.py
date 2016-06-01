@@ -10,6 +10,7 @@ from model.code_step import CodeStep
 
 db = SqliteDatabase('gherkin.db')
 
+
 class Step(Model):
     '''
     classdocs
@@ -19,7 +20,6 @@ class Step(Model):
     step_type = CharField()
     scenario = ForeignKeyField(Scenario, related_name='steps')
     code_step = ForeignKeyField(CodeStep, related_name='steps', null=True)
-    
-    
+
     class Meta:
         database = db
