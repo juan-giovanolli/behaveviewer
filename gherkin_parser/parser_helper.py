@@ -15,15 +15,17 @@ class ParserHelper:
     retrieving information from the file parsed
     """
 
-    def __init__(self, filename):
+    def __init__(self, filename=None):
+        assert filename is not None, "filename not a string"
         if not isfile(filename):
             for root, dirs, files in walk(filename):
                 for file in files:
                     print join(root, file)
-                    if file.endswith('.feature') and file not in('ipe_epo_remotecmd.feature', 'dxl_broker_extension_l10n.feature'):
+                    if file.endswith('.feature'):
                         parser = ParserHelper(join(root, file))
                         parser.load_scenarios()
         else:
+            self._current_file = filename
             self._tags = []
             print "Parsing file: " + filename
             self._parsed_data = Parser().parse_file(filename)
@@ -35,24 +37,26 @@ class ParserHelper:
         feature = feature_and_background[0]
         feature_name = ' '.join(feature[1])
         self._feature = feature_name  # Used to create scenarios
+        db_feature = None
         try:
-            db_name = Feature.get(Feature.name == feature_name).name
-        except:
-            print 'Adding feature in the database'
-            db_name = ''
-        if feature_name != db_name:
-            feature = Feature.create(name=feature_name)
+            db_feature = Feature.get(Feature.name == feature_name)
+            db_feature = Feature(name=feature_name + " - (Duplicated)")
+            db_feature.save()
+        except Feature.DoesNotExist:
+            print "Adding new feature to database..."
+            db_feature = Feature.create(name=feature_name)
         if len(feature_and_background) > 1:
             background = feature_and_background[1]
-            scenario = self._create_scenario(parser_constants.BACKGROUND, True, [], feature)
+            scenario = self._create_scenario(parser_constants.BACKGROUND, True, [], db_feature)
             for step in background[1]:
                 self._create_step(' '.join(step[1]), scenario, step[0])
-        return feature
+        return db_feature
 
-    def _create_tags(self, scenario):
+    def _create_tags(self, scenario=None):
         """
         Reads parsed tags and add each in the database if it dowsn't exists
         """
+        assert scenario is not None
         tags = []
         for elem in scenario:
             if elem[0] == 'tag':
@@ -65,13 +69,20 @@ class ParserHelper:
                     tags.append(new_tag)
         return tags
 
-    def _create_scenario(self, name, is_background, tags, feature):
+    def _create_scenario(self, name=None, is_background=None, tags=None, feature=None):
+        assert name is not None
+        assert is_background is not None
+        assert tags is not None
+        assert feature is not None
         scenario = Scenario.create(name=name, is_background=is_background, feature=feature)
         scenario.tags.add(tags)
         scenario.save()
         return scenario
 
-    def _create_step(self, name, scenario, step_type):
+    def _create_step(self, name=None, scenario=None, step_type=None):
+        assert name is not None
+        assert scenario is not None
+        assert step_type is not None
         codeStep = EntityService().find_code_step(name)
         Step.create(name=name, scenario=scenario, code_step=codeStep, step_type=step_type)
 

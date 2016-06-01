@@ -147,8 +147,8 @@ class MainBehaveWindow(QtGui.QTabWidget):
             self.__save_current_directory_to_file()
             self.__process_directory_name()
             path_to_step = os.path.join(self.__feature_directory_path, "steps")
-            self.__code_parser.parseDir(path_to_step)
             db.begin()
+            self.__code_parser.parseDir(path_to_step)
             ParserHelper(self.__feature_directory_path)
             db.commit()
             print "parsing directory ...."
@@ -188,7 +188,7 @@ class MainBehaveWindow(QtGui.QTabWidget):
         self.__create_main_tab()
         self.__create_features_tab()
         self.__create_steps_tab()
-        self.__ceate_statistics_tab()
+        self.__create_statistics_tab()
 
     def __create_function_map_for_worker(self):
         self._function_dictionary = {"PARSING_DIRECTORY: ": self.parsing_directory,
