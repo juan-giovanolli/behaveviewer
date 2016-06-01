@@ -28,7 +28,7 @@ class MainBehaveWindow(QtGui.QTabWidget):
     __STATISTICS_TABLE_ID = "statistics_table"
     __DEFAULT_CONFIG_FILE = "config_behavior_viewer.conf"
 
-    __TABLE_CONFIG = {"steps_table": {"table_column_titles": "name, descripcion, scenario, code_step"},
+    __TABLE_CONFIG = {"steps_table": {"table_column_titles": "name, descripcion, scenario, code_step, Tags"},
                       "feature_table": {"table_column_titles": "name, descripcion"},
                       "statistics_table": {"table_column_titles": "Most Used Step name, Count"}
                       }
@@ -141,23 +141,20 @@ class MainBehaveWindow(QtGui.QTabWidget):
         # TODO: Crear variable que setea estado de la aplicacion
         if self.__feature_directory_path is not None:
             self.setTextInVerboseLabel("Seletcted Path : {0}".format(feature_directory_path))
-            print "Path Seleccionado: {0}".format(self.__feature_directory_path)
             self.setTextInVerboseLabel("parsing directory ....")
             self.__save_current_directory_to_file()
             self.__process_directory_name()
             path_to_step = os.path.join(self.__feature_directory_path, "steps")
-            print "path to step {}".format(path_to_step)
             self.__code_parser.parseDir(path_to_step)
             ParserHelper(path_to_step)
-            print "parsing directory ...."
             self.__save_current_directory_to_file()
 
     def creating_db_tables(self):
         self.setTextInVerboseLabel("create DataBase tables .....")
-        print "create DataBase tables ....."
+
 
     def fill_view_tables_with_sql(self):
-        print "Filling View tables from SQL Sentences........."
+
         self.setTextInVerboseLabel("Filling View tables from SQL Sentences.........")
         self.__fill_steps_table()
         self.__fill_feature_table()
@@ -167,26 +164,25 @@ class MainBehaveWindow(QtGui.QTabWidget):
         self.setTextInVerboseLabel("fill_steps_table")
         data = self.__step_table.extract_data_fom_sql_table()
         self.__step_table.updateData(data)
-        print "fill_steps_table"
+
 
     def __fill_feature_table(self):
         self.setTextInVerboseLabel("__fill_feature_table")
-        print "extracting data from feature sql table"
         data = self.__feature_table.extract_data_fom_sql_table()
         self.__feature_table.updateData(data)
-        print "__fill_feature_table"
+
 
     def __fill_statistics_table(self):
         self.setTextInVerboseLabel("__fill_statistics_table")
         data = self.__statistics_table.extract_data_fom_sql_table()
         self.__statistics_table.updateData(data)
-        print "finalizaccion __fill_statistics_table"
+
 
     def __create_tabs(self):
         self.__create_main_tab()
         self.__create_features_tab()
         self.__create_steps_tab()
-        self.__ceate_statistics_tab()
+        self.__create_statistics_tab()
 
     def __create_function_map_for_worker(self):
         self._function_dictionary = {"PARSING_DIRECTORY: ": self.parsing_directory,
