@@ -5,8 +5,8 @@ from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import QThread, SIGNAL
 from tables_content_manager import TableDataRepresentation
 from service_worker_thread import ServiceThread
-from parser2.parser_helper import ParserHelper
-from parser2.code_parser import CodeParser 
+from parser.parser_helper import ParserHelper
+from parser.code_parser import CodeParser 
 
 
 

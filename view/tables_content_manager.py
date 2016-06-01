@@ -43,8 +43,8 @@ class TableDataRepresentation(QtGui.QTableWidget):
         for rows in query:
             description = self.__check_string_is_not_None(rows.description)
             self.insertRow(index)
-            self.setItem(index, 0, QtGui.QTableWidgetItem(rows.name))
-            self.setItem(index, 1, QtGui.QTableWidgetItem(description))
+            self.setItem(index, 0, self.__createTableItem(rows.name, not QtCore.Qt.ItemIsEditable))
+            self.setItem(index, 1, self.__createTableItem(description, not QtCore.Qt.ItemIsEditable))
             index +=1
 
 
@@ -62,10 +62,10 @@ class TableDataRepresentation(QtGui.QTableWidget):
             codeStepName = None if rows.code_step == None else rows.code_step.name
             codeStep = self.__check_string_is_not_None(codeStepName)
             self.insertRow(index)
-            self.setItem(index, 0, QtGui.QTableWidgetItem(name))
-            self.setItem(index, 1, QtGui.QTableWidgetItem(description))
-            self.setItem(index, 2, QtGui.QTableWidgetItem(scenario))
-            self.setItem(index, 3, QtGui.QTableWidgetItem(codeStep))
+            self.setItem(index, 0, self.__createTableItem(name, not QtCore.Qt.ItemIsEditable))
+            self.setItem(index, 1, self.__createTableItem(description, not QtCore.Qt.ItemIsEditable))
+            self.setItem(index, 2, self.__createTableItem(scenario, not QtCore.Qt.ItemIsEditable))
+            self.setItem(index, 3, self.__createTableItem( codeStep, not QtCore.Qt.ItemIsEditable))
             index +=1
 
 
@@ -79,9 +79,15 @@ class TableDataRepresentation(QtGui.QTableWidget):
             print "row name: {}".format(name)
             step_count = self.__check_string_is_not_None(str(rows.count))
             self.insertRow(index)
-            self.setItem(index, 0, QtGui.QTableWidgetItem(name))
-            self.setItem(index, 1, QtGui.QTableWidgetItem(step_count))
+            self.setItem(index, 0, self.__createTableItem(name,not QtCore.Qt.ItemIsEditable))
+            self.setItem(index, 1, self.__createTableItem( step_count , not QtCore.Qt.ItemIsEditable))
             index +=1
+
+
+    def __createTableItem(self, table_item_name, item_flag):
+        return_item = QtGui.QTableWidgetItem( table_item_name )
+        return_item.setFlags(item_flag)
+        return return_item
 
 
     def __check_string_is_not_None(self, some_string):
