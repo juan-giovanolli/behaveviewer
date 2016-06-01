@@ -5,11 +5,8 @@ from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import QThread, SIGNAL
 from tables_content_manager import TableDataRepresentation
 from service_worker_thread import ServiceThread
-from parser.parser_helper import ParserHelper
-from parser.code_parser import CodeParser 
-
-
-
+from gherkin_parser.parser_helper import ParserHelper
+from gherkin_parser.code_parser import CodeParser 
 
 
 class MainBehaveWindow(QtGui.QTabWidget):
@@ -36,6 +33,7 @@ class MainBehaveWindow(QtGui.QTabWidget):
                       "feature_table":{"table_column_titles":"name, descripcion"},
                       "statistics_table":{"table_column_titles":"Most Used Step name, Count"}
                       }
+
 
     def __init__(self, db_service_manager):
         super(MainBehaveWindow, self).__init__()
@@ -69,10 +67,12 @@ class MainBehaveWindow(QtGui.QTabWidget):
         botton.move( int(config_dict["X_POS"]), int(config_dict["Y_POS"]))
         return botton
 
+
     def __load_feature_directory(self):
         print "loading features directory"
         #TODO: Este codigo esta en verificacion
         self.__show_dialog_find_files()
+
 
     def __lock_unlock_tabs(self, lock_status):
         self.setTabEnabled(self.__TAB_FEATURE_INDEX, lock_status )
@@ -109,6 +109,7 @@ class MainBehaveWindow(QtGui.QTabWidget):
         self.main_tab_layout.addWidget(self.__create_botton("Quit",QtCore.QCoreApplication.instance().quit,boton_config))
         self.__main_tab.setLayout(self.main_tab_layout)
 
+
     def __create_label(self, label_text):
         label = QtGui.QLabel(label_text,self)
         label.setAlignment(QtCore.Qt.AlignCenter)
@@ -120,6 +121,7 @@ class MainBehaveWindow(QtGui.QTabWidget):
         features_tab_layout = QtGui.QVBoxLayout()
         features_tab_layout.addWidget(self.__feature_table )
         self.__feature_tab.setLayout(features_tab_layout)
+
 
     def __create_steps_tab(self):
         self.__steps_tab = QtGui.QWidget()
@@ -133,6 +135,7 @@ class MainBehaveWindow(QtGui.QTabWidget):
         statistics_tab_layout = QtGui.QVBoxLayout()
         statistics_tab_layout.addWidget(self.__statistics_table)
         self.__statistics_tab.setLayout(statistics_tab_layout)
+
 
     def __register_tab(self, tab, tab_label):
         self.addTab(tab, tab_label)
@@ -239,6 +242,7 @@ class MainBehaveWindow(QtGui.QTabWidget):
         with open(self.__DEFAULT_CONFIG_FILE, 'r') as input_file:
             self.__feature_directory_path = input_file.readlines()
 
+
     def __load_only_tables_view(self):
         if self.__feature_directory_path is None:
             self.__load_feature_directory_from_file()
@@ -250,8 +254,10 @@ class MainBehaveWindow(QtGui.QTabWidget):
     def __reset_labels(self):
         self.setTextInVerboseLabel("")
 
+
     def __process_directory_name(self):
         self.__feature_directory_path = unicode(self.__feature_directory_path)
+
 
 def main():
     app = QtGui.QApplication(sys.argv)
