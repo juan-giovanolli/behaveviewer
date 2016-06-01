@@ -5,3 +5,5 @@
 /new.sql
 /scrap
 /parser2/
+*.conf
+*.orig
