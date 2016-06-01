@@ -8,6 +8,7 @@ from model.feature import Feature
 from model.code_step import CodeStep
 from model.step import Step
 from peewee import fn
+from model.tag import Tag
 ScenarioTagsTable = Scenario.tags.get_through_model()
 class EntityService(object):
     '''
@@ -43,7 +44,7 @@ class EntityService(object):
         query = Step.select(Step, ScenarioTagsTable)\
             .join(Scenario)\
             .join(ScenarioTagsTable)\
-            .where(Step.name ** ('%' + expression + '%'))
+            .where(Step.name ** ('%' + str(expression) + '%'), ScenarioTagsTable.tag_id == tag_id)
         print query
         return query
     
