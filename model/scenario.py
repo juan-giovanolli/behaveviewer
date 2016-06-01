@@ -10,6 +10,7 @@ from model.tag import Tag
 from playhouse.fields import ManyToManyField
 from config.setup import db
 
+
 class Scenario(Model):
     '''
     classdocs
@@ -19,7 +20,7 @@ class Scenario(Model):
     feature = ForeignKeyField(Feature, related_name='scenarios')
     is_background = BooleanField()
     tags = ManyToManyField(Tag, related_name='scenarios')
-    
+
     class Meta:
         database = db
         db_table = 'scenario'

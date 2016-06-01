@@ -6,6 +6,7 @@ Created on 24 de may. de 2016
 from peewee import CharField, Model
 from config.setup import db
 
+
 class CodeStep(Model):
     '''
     classdocs
@@ -14,7 +15,7 @@ class CodeStep(Model):
     clean_name = CharField()
     description = CharField(null=True)
     file_name = CharField(null=True)
-    
+
     class Meta:
         database = db
         db_table = 'codestep'

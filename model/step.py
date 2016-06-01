@@ -8,6 +8,7 @@ from model.scenario import Scenario
 from model.code_step import CodeStep
 from config.setup import db
 
+
 class Step(Model):
     '''
     classdocs
@@ -17,8 +18,7 @@ class Step(Model):
     step_type = CharField()
     scenario = ForeignKeyField(Scenario, related_name='steps')
     code_step = ForeignKeyField(CodeStep, related_name='steps', null=True)
-    
-    
+
     class Meta:
         database = db
         db_table = 'step'
