@@ -17,9 +17,7 @@ if __name__ == '__main__':
     CodeParser().parseDir('C:\\Users\\Juan\\dev\\workspace\\qa_framework\\project\\features\\steps')
     ParserHelper('C:\\Users\\Juan\\dev\\workspace\\qa_framework\\project\\features')
     db.commit()
-    query = EntityService().find_steps('',1)
+    query = EntityService().find_scenarios('')
     for step in query:
         print step.id, step.name
-        for tag in step.scenario.tags:
-            print tag.name
 

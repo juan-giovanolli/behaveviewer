@@ -37,8 +37,8 @@ class EntityService(object):
     def find_features(self, expression):
         return Feature.select().where(Feature.name ** ('%' + expression + '%'))
 
-    def find_scenarios(self, expression):
-        return Scenario.select().where(Scenario.name ** ('%' + expression + '%'))
+    def find_scenarios(self, expression, is_background=False):
+        return Scenario.select().where(Scenario.name ** ('%' + expression + '%'), Scenario.is_background == is_background)
 
     def find_steps(self, expression, tag_id=None):
         ScenarioTagsTable = Scenario.tags.get_through_model()
