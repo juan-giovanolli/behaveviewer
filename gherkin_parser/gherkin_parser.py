@@ -20,11 +20,12 @@ class Stack:
         return (self.items == [])
 
     def contains(self, key=None):
-        assert key is not None, "contains method recieved a None key"
-        result = False
-        for it in self.items:
-            result = result or it[0] == key.lower()
-        return result
+        assert key is not None, "contains method received a None key"
+        index = 0
+        length = len(self.items)
+        while index < length or self.items[index][0] == key.lower():
+            index += 1
+        return index != length
 
     def to_list(self):
         result = []
@@ -51,9 +52,7 @@ class Parser:
         Parses one feature file. It returns a tuple with the list of scenarios
         parsed and the name of feature and background steps if it has.
         """
-        if filename is None:
-            print "No file to parse"
-        else:
+        if filename is not None:
             list_of_scenarios = []
             line = 'initial value for string that should be overwritten'
             with open(filename) as file:
@@ -67,9 +66,11 @@ class Parser:
                 self._analize_line(line)
                 list_of_scenarios.append(self._process_scenario())
             return list_of_scenarios, self._parsed_feature.to_list()
+        else:
+            print "No file to parse"
 
     def _analize_line(self, line=None):
-        assert line is not None, "No line to analize. None value recieved in _analize_line"
+        assert line is not None, "No line to analize. None value received in _analize_line"
         """
         Given a line, it delegates further action to its handler depending on the keyword
         """
@@ -86,45 +87,45 @@ class Parser:
             self._handle_step(tokens)
 
     def _tokenize_line(self, line=None):
-        assert line is not None, "No line to tokenize. None value recieved in _tokenize_line"
+        assert line is not None, "No line to tokenize. None value received in _tokenize_line"
         new_line = []
         raw_line = line.split()
-        if raw_line and '#' not in raw_line[0]:
-            for a in raw_line:
-                tokens = a.split(':')
+        if raw_line and COMMENT_MARK not in raw_line[0]:
+            for character in raw_line:
+                tokens = character.split(DELIMITER)
                 if len(tokens) > 1:
-                    new_line.append(tokens[0] + ':')
+                    new_line.append(tokens[0] + DELIMITER)
                     new_line.append(tokens[1])
                 else:
                     new_line.append(tokens[0])
         return new_line
 
     def _is_feature(self, tokens=None):
-        assert tokens is not None, "None tokens recieved at _is_feature"
+        assert tokens is not None, "None tokens received at _is_feature"
         return tokens[0].lower() == FEATURE_MARK
 
     def _is_background(self, tokens=None):
-        assert tokens is not None, "None tokens recieved at _is_background"
+        assert tokens is not None, "None tokens received at _is_background"
         return tokens[0].lower() == BACKGROUND_MARK
 
     def _is_tag(self, tokens=None):
-        assert tokens is not None, "None tokens recieved at _is_tag"
+        assert tokens is not None, "None tokens received at _is_tag"
         return tokens[0][0] == TAG_MARK
 
     def _is_scenario(self, tokens=None):
-        assert tokens is not None, "None tokens recieved at _is_scenario"
+        assert tokens is not None, "None tokens received at _is_scenario"
         token = tokens[0].lower()
-        if token == 'scenario':  # TODO change this for support to scenario outlines and tables
-            token += ':'
+        if token == SCENARIO:  # TODO change this for support to scenario outlines and tables
+            token += DELIMITER
         return token == SCENARIO_MARK
 
     def _is_step(self, tokens=None):
-        assert tokens is not None, "None tokens recieved at _is_step"
+        assert tokens is not None, "None tokens received at _is_step"
         step = tokens[0].lower()
         return step == GIVEN or step == WHEN or step == THEN or step == AND
 
     def _handle_feature(self, tokens=None):
-        assert tokens is not None, "None tokens recieved at _handle_feature"
+        assert tokens is not None, "None tokens received at _handle_feature"
         result = not self._parser_stack.contains(FEATURE_MARK)
         if result:
             self._parser_stack.push(FEATURE_MARK, tokens[1:])
@@ -133,7 +134,7 @@ class Parser:
         return result
 
     def _handle_background(self, tokens=None):
-        assert tokens is not None, "None tokens recieved at _handle_background"
+        assert tokens is not None, "None tokens received at _handle_background"
         result = not self._parser_stack.contains(BACKGROUND_MARK)
         if result:
             self._parser_stack.push(BACKGROUND_MARK, [])
@@ -142,7 +143,7 @@ class Parser:
         return result
 
     def _handle_tag(self, tokens=None):
-        assert tokens is not None, "None tokens recieved at _handle_tag"
+        assert tokens is not None, "None tokens received at _handle_tag"
         end_scenario = self._parser_stack.contains(SCENARIO_MARK) or self._EOF
         if end_scenario:
             self._scenario_ready = True
@@ -153,14 +154,14 @@ class Parser:
         self._parser_stack.push(TAG, list_of_tags)
 
     def _handle_scenario(self, tokens=None):
-        assert tokens is not None, "None tokens recieved at _handle_scenario"
+        assert tokens is not None, "None tokens received at _handle_scenario"
         end_scenario = self._parser_stack.contains(SCENARIO_MARK) or self._EOF
         if end_scenario:
             self._scenario_ready = True
         self._parser_stack.push(SCENARIO_MARK, tokens[1:])
 
     def _handle_step(self, tokens=None):
-        assert tokens is not None, "None tokens recieved at _handle_step"
+        assert tokens is not None, "None tokens received at _handle_step"
         self._parser_stack.push(tokens[0], tokens[1:])
 
     def _process_feature(self):
@@ -190,8 +191,7 @@ class Parser:
         while self._parser_stack.contains(SCENARIO_MARK) or self._parser_stack.contains(TAG):
             last_token, text = self._parser_stack.pop()
             parsed_scenario.push(last_token, text)
-        # parsed_scenario.push(last_token, text) # TODO: check why this is not needed
         self._process_feature()
         self._scenario_ready = False
-        self._parser_stack.push(temp[0], temp[1])  # TODO: fix this: temp is for the tag or scenario that triggered the parse of scenario
+        self._parser_stack.push(temp[0], temp[1])
         return parsed_scenario.to_list()
