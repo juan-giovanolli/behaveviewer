@@ -5,16 +5,13 @@ Created on 24 de may. de 2016
 '''
 from peewee import CharField, Model, ForeignKeyField,\
     BooleanField
+from playhouse.fields import ManyToManyField
 from model.feature import Feature
 from model.tag import Tag
-from playhouse.fields import ManyToManyField
 from config.setup import db
 
 
 class Scenario(Model):
-    '''
-    classdocs
-    '''
     name = CharField()
     description = CharField(null=True)
     feature = ForeignKeyField(Feature, related_name='scenarios')

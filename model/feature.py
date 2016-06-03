@@ -8,9 +8,6 @@ from config.setup import db
 
 
 class Feature(Model):
-    '''
-    classdocs
-    '''
     name = CharField()
     description = CharField(null=True)
 

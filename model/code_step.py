@@ -8,9 +8,6 @@ from config.setup import db
 
 
 class CodeStep(Model):
-    '''
-    classdocs
-    '''
     name = CharField()
     clean_name = CharField()
     description = CharField(null=True)
