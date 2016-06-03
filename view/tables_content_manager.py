@@ -1,6 +1,6 @@
 import sys
 from PyQt4 import QtGui, QtCore
-
+from tag_viewer import TagViewerTable
 
 
 class TableDataRepresentation(QtGui.QTableWidget):
@@ -13,15 +13,17 @@ class TableDataRepresentation(QtGui.QTableWidget):
     __MAX_COUNT_VALUE = 5
     __EMPTY_FIELD = "EMPTY_FIELD"
     __DEFAULT_TABLE_ROW_INDEX_ALLOW_CONTEXT_MENU = 0
+    __WHITE_SPACE_TEXT = " "
+    __TAG_DESCRIPTOR = "@"
 
     def __init__(self, data, table_config_data, db_service_manager, table_id):
         QtGui.QTableWidget.__init__(self, self.__INITIAL_TABLE_ROW_SIZE, self.__INITIAL_TABLE_SIZE)
         self.__config_table(table_config_data)
         self.__db_service_manager = db_service_manager
         self.__table_id = table_id
+        self.__tags_dictionary = {}
         self.__add_connection_to_table()
-
-
+        self.__tag_viewer= TagViewerTable()
 
 
     def __add_connection_to_table(self):
@@ -32,16 +34,12 @@ class TableDataRepresentation(QtGui.QTableWidget):
     def __config_table(self, table_config_data):
         self.setColumnCount(len(table_config_data["table_column_titles"].split(',')))
         self.setHorizontalHeaderLabels(table_config_data["table_column_titles"].split(','))
-        #Contextual Menu
         self.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
+
 
     def updateData(self, query):
         if (self.__check_data_table(query)):
             self.__select_table_to_populate(query)
-        else:
-            print "Datos Vacios ---->>>> {} \n".format(self.__table_id)
-
-
 
 
     def __select_table_to_populate(self, query):
@@ -90,21 +88,22 @@ class TableDataRepresentation(QtGui.QTableWidget):
             self.setItem(index, 4, self.__createTableItem( tags_fields, QtCore.Qt.ItemIsEditable))
             index +=1
 
+
     def __extract_tag_from_querry(self,query):
         tags_fields = self.__EMPTY_STRING
         for tag in query.scenario.tags:
-                tags_fields += " "+tag.name
+                self.__insert_tag_in_dic(tag.name,str(tag.id))
+                tags_fields += self.__TAG_DESCRIPTOR + tag.name
         return tags_fields
 
+
     def __populate_table_statistics(self, query):
-        print "populate table stastistics"
         self.setSortingEnabled(False)
         index = self.rowCount()
         name = self.__EMPTY_STRING
         step_count = self.__EMPTY_STRING
         for rows in query:
             name = self.__check_string_is_not_None(rows.name)
-            print "row name: {}".format(name)
             step_count = self.__check_string_is_not_None(str(rows.count))
             self.insertRow(index)
             self.setItem(index, 0, self.__createTableItem(name, QtCore.Qt.ItemIsEditable))
@@ -112,11 +111,10 @@ class TableDataRepresentation(QtGui.QTableWidget):
             index +=1
         self.setSortingEnabled(True)
 
-#Qt Event overriding
-#QtCore.Qt.DescendingOrder
-#QtCore.Qt.AscendingOrder
+
     def sorting_table(self,qt_order ):
         self.sortItems(0,qt_order)
+
 
     def __createTableItem(self, table_item_name, item_flag):
         return_item = QtGui.QTableWidgetItem( table_item_name )
@@ -158,22 +156,64 @@ class TableDataRepresentation(QtGui.QTableWidget):
 
 
     def __order_ascending_table_view(self):
-        print "ascending order"
         self.sortItems(self.__column_index_selected, QtCore.Qt.AscendingOrder)
 
 
+    def __insert_tag_in_dic(self, tag_name, tag_id):
+        result = self.__tags_dictionary.get(tag_name)
+        if result is None :
+            self.__tags_dictionary[tag_name] = tag_name + ":" + tag_id
+
+
+    def __get_tag_dictionary_as_list_from_selection(self, row_selection):
+        row_selection_list = row_selection.rstrip().lstrip().split(self.__WHITE_SPACE_TEXT)
+        return_list = []
+        for row_tag in row_selection_list:
+            return_list.append(self.__tags_dictionary[row_tag[1:]])
+        return return_list
+
+
+    def __get_complete_tag_from_dic_as_list(self):
+        return self.__tags_dictionary.values()
+
+    def __is_tag_row(self, data):
+        return (self.__TAG_DESCRIPTOR in data)
+
+
+    def __search_by_tag_in_current_row(self):
+        data = self.__get_text_from_selected_cell()
+        if self.__is_tag_row(data) :
+            self.__tag_viewer.set_data_to_combo_list(self.__get_tag_dictionary_as_list_from_selection(data))
+            self.__tag_viewer.set_data_service(self.__db_service_manager)
+            self.__tag_viewer.show()
+
+
+    def __get_text_from_selected_cell(self):
+        model = self.model()
+        index = model.index( self.__row_index_selected, self.__column_index_selected)
+        return str(model.data(index).toString())
+
+    def __search_by_tags_in_dictionary(self):
+        self.__tag_viewer.set_data_to_combo_list(self.__get_complete_tag_from_dic_as_list())
+        self.__tag_viewer.set_data_service(self.__db_service_manager)
+        self.__tag_viewer.show()
+        print "__search_by_tags_in_dictionary"
+
+
     def __order_descending_table_view(self):
-        print "descending table order"
         self.sortItems(self.__column_index_selected, QtCoreQt.DescendingOrder)
+
 
     def contextMenuEvent(self, event):
         self.__column_index_selected = self.indexAt(event.pos()).column()
+        self.__row_index_selected = self.indexAt(event.pos()).row()
         menu = QtGui.QMenu(self)
         menu.addAction(self.__create_action_menu("AscendingOrder", self.__order_ascending_table_view))
         menu.addAction(self.__create_action_menu("DescingOrder", self.__order_descending_table_view))
+        menu.addAction(self.__create_action_menu("Search By Tags in current Row", self.__search_by_tag_in_current_row))
+        menu.addAction(self.__create_action_menu("Search By Tags", self.__search_by_tags_in_dictionary))
         menu.exec_(event.globalPos())
         event.accept()
-        
 
 
     def __get_current_cell_position(self, row, column):
