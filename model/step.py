@@ -10,9 +10,6 @@ from config.setup import db
 
 
 class Step(Model):
-    '''
-    classdocs
-    '''
     name = CharField()
     description = CharField(null=True)
     step_type = CharField()
