@@ -19,7 +19,7 @@ class ParserHelper:
         assert filename is not None, "filename not a string"
         if not isfile(filename):
             for root, dirs, files in walk(filename):
-                self.parse_file(root, files)
+                self._parse_file(root, files)
         else:
             print "Parsing file: " + filename
             self._entity_service = EntityService()

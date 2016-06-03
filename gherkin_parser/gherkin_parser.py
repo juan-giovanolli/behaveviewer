@@ -21,11 +21,10 @@ class Stack:
 
     def contains(self, key=None):
         assert key is not None, "contains method received a None key"
-        index = 0
-        length = len(self.items)
-        while index < length or self.items[index][0] == key.lower():
-            index += 1
-        return index != length
+        for item in self.items:
+            if item[0] == key.lower():
+                return True
+        return False
 
     def to_list(self):
         result = []
