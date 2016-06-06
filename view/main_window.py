@@ -97,7 +97,7 @@ class MainBehaveWindow(QtGui.QTabWidget):
         self.main_tab_layout.addStretch(1)
         boton_config["X_POS"] = "300"
         boton_config["Y_POS"] = "40"
-        self.main_tab_layout.addWidget(self.__create_botton("Load Only Tables: ", self.__load_only_tables_view, boton_config))
+        self.main_tab_layout.addWidget(self.__create_botton("Load tables only: ", self.__load_only_tables_view, boton_config))
         self.main_tab_layout.addStretch(1)
         self.main_tab_layout.addWidget(self.__create_botton("Quit", QtCore.QCoreApplication.instance().quit, boton_config))
         self.__main_tab.setLayout(self.main_tab_layout)
