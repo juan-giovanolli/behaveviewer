@@ -1,25 +1,25 @@
 import os
 from config.setup import db
 from gherkin_parser.parser_helper import ParserHelper
+from gherkin_parser.code_parser import CodeParser
 
 
-def parsing_directory(self, feature_directory_path=None):
-    # TODO: Crear variable que setea estado de la aplicacion
-    if self.__feature_directory_path is not None:
-        self.setTextInVerboseLabel("Seletcted Path : {0}".format(feature_directory_path))
-        print "Path Seleccionado: {0}".format(self.__feature_directory_path)
-        self.setTextInVerboseLabel("parsing directory ....")
-        self.__save_current_directory_to_file()
-        self.__process_directory_name()
-        path_to_step = os.path.join(self.__feature_directory_path, "steps")
-        db.begin()
-        self.__code_parser.parseDir(path_to_step)
-        ParserHelper(self.__feature_directory_path)
-        db.commit()
-        print "parsing directory ...."
-        self.__save_current_directory_to_file()
+class NoUiRun:
+    def __init__(self):
+        pass
+
+    def parsing_directory(self, feature_directory_path=None):
+        assert feature_directory_path is not None
+        if os.path.isfile():
+            feature_directory_path = unicode(feature_directory_path)
+            path_to_step = os.path.join(feature_directory_path, "steps")
+            db.begin()
+            CodeParser().parseDir(path_to_step)
+            ParserHelper(feature_directory_path)
+            db.commit()
+            print "parsing directory ...."
 
 
 def main_no_ui(feature_directory_path=None):
     assert feature_directory_path, "No feature path given"
-    parsing_directory(feature_directory_path)
+    NoUiRun().parsing_directory(feature_directory_path)

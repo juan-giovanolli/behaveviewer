@@ -10,6 +10,7 @@ from model.code_step import CodeStep
 from model.feature import Feature
 from model.step import Step
 
+
 class Setup(object):
 
     def __init__(self, params):
@@ -20,7 +21,7 @@ class Setup(object):
             if params['dummy_db']:
                 print 'Creating dummy database'
                 self.populate_db()
-                
+
     def reset_db(self):
         db.connect()
         ScenarioTagsTable = Scenario.tags.get_through_model()

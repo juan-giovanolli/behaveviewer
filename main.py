@@ -8,18 +8,24 @@ from config.setup import Setup
 from main_ui import main_ui
 from main_no_ui import main_no_ui
 
+parsing_directory = ''
 
-def main(ui_flag):
+
+def main(ui_flag, parsing_directory=None):
     Setup({'reset_db': True, 'dummy_db': False})
     if ui_flag:
-        main_ui()
+        main_no_ui(parsing_directory)
     else:
-        main_no_ui()
+        main_ui()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Process some integers.')
-    parser.add_argument('--no-ui', action='store_const', const=True,
+    parser.add_argument('--no-ui', action='store_true',
                         help='Runs parser without UI and prints on stdout')
-    args = parser.parse_args(['--no-ui'])
+    parser.add_argument('-d', '--dir', nargs=1, action='store_const', default=None,
+                        const=parsing_directory)
 
-    main(args.no_ui)
+    import sys
+    print "HOLA        ", sys.argv
+    args = parser.parse_args()
+    main(args.no_ui, parsing_directory)

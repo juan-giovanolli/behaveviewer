@@ -16,7 +16,7 @@ from model.tag import Tag
 class EntityService(object):
 
     _ANY_STRING = '%'
-    
+
     def find_steps_per_feature(self, feature_id):
         return Step.select().join(Scenario).join(Feature).where(Feature.id == feature_id)
 
