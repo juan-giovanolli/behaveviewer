@@ -6,7 +6,7 @@ from tables_content_manager import TableDataRepresentation
 from service_worker_thread import ServiceThread
 from gherkin_parser.parser_helper import ParserHelper
 from gherkin_parser.code_parser import CodeParser
-from config.setup import db
+from config.setup import db, Setup
 
 
 class MainBehaveWindow(QtGui.QTabWidget):
@@ -97,7 +97,7 @@ class MainBehaveWindow(QtGui.QTabWidget):
         self.main_tab_layout.addStretch(1)
         boton_config["X_POS"] = "300"
         boton_config["Y_POS"] = "40"
-        self.main_tab_layout.addWidget(self.__create_botton("Load Only Tables: ", self.__load_only_tables_view, boton_config))
+        self.main_tab_layout.addWidget(self.__create_botton("Load tables only: ", self.__load_only_tables_view, boton_config))
         self.main_tab_layout.addStretch(1)
         self.main_tab_layout.addWidget(self.__create_botton("Quit", QtCore.QCoreApplication.instance().quit, boton_config))
         self.__main_tab.setLayout(self.main_tab_layout)
@@ -136,9 +136,11 @@ class MainBehaveWindow(QtGui.QTabWidget):
                                                                                self.__CURRENT_PATH_LINUX,
                                                                                options)
         # self.__service_worker.start()
+        
         self.__run_sequencial()
 
     def parsing_directory(self, feature_directory_path=None):
+        Setup({'reset_db': True, 'dummy_db': False})
         # TODO: Crear variable que setea estado de la aplicacion
         if self.__feature_directory_path is not None:
             self.setTextInVerboseLabel("Seletcted Path : {0}".format(feature_directory_path))
@@ -211,6 +213,7 @@ class MainBehaveWindow(QtGui.QTabWidget):
             self.__feature_directory_path = input_file.readlines()
 
     def __load_only_tables_view(self):
+        
         if self.__feature_directory_path is None:
             self.__load_feature_directory_from_file()
 
