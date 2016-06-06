@@ -23,24 +23,19 @@ class TableDataRepresentation(QtGui.QTableWidget):
         self.__table_id = table_id
         self.__tags_dictionary = {}
         self.__add_connection_to_table()
-        self.__tag_viewer= TagViewerTable()
-
+        self.__tag_viewer = TagViewerTable()
 
     def __add_connection_to_table(self):
         self.cellClicked.connect(self.__get_current_cell_position)
-
-
 
     def __config_table(self, table_config_data):
         self.setColumnCount(len(table_config_data["table_column_titles"].split(',')))
         self.setHorizontalHeaderLabels(table_config_data["table_column_titles"].split(','))
         self.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
 
-
     def updateData(self, query):
         if (self.__check_data_table(query)):
             self.__select_table_to_populate(query)
-
 
     def __select_table_to_populate(self, query):
         self.setSortingEnabled(False)
@@ -52,8 +47,6 @@ class TableDataRepresentation(QtGui.QTableWidget):
             self.__populate_table_statistics(query)
         self.setSortingEnabled(True)
 
-
-
     def __populate_table_feature(self, query):
         index = self.rowCount()
         description = self.__EMPTY_STRING
@@ -62,8 +55,7 @@ class TableDataRepresentation(QtGui.QTableWidget):
             self.insertRow(index)
             self.setItem(index, 0, self.__createTableItem(rows.name, QtCore.Qt.ItemIsEditable))
             self.setItem(index, 1, self.__createTableItem(description, QtCore.Qt.ItemIsEditable))
-            index +=1
-
+            index += 1
 
     def __populate_table_step(self, query):
         index = self.rowCount()
@@ -81,21 +73,19 @@ class TableDataRepresentation(QtGui.QTableWidget):
             codeStep = self.__check_string_is_not_None(codeStepName)
             tags_fields = self.__check_string_is_not_None(self.__extract_tag_from_querry(rows))
             self.insertRow(index)
-            self.setItem(index, 0, self.__createTableItem( name, QtCore.Qt.ItemIsEditable))
-            self.setItem(index, 1, self.__createTableItem( description, QtCore.Qt.ItemIsEditable))
-            self.setItem(index, 2, self.__createTableItem( scenario, QtCore.Qt.ItemIsEditable))
-            self.setItem(index, 3, self.__createTableItem( codeStep, QtCore.Qt.ItemIsEditable))
-            self.setItem(index, 4, self.__createTableItem( tags_fields, QtCore.Qt.ItemIsEditable))
-            index +=1
+            self.setItem(index, 0, self.__createTableItem(name, QtCore.Qt.ItemIsEditable))
+            self.setItem(index, 1, self.__createTableItem(description, QtCore.Qt.ItemIsEditable))
+            self.setItem(index, 2, self.__createTableItem(scenario, QtCore.Qt.ItemIsEditable))
+            self.setItem(index, 3, self.__createTableItem(codeStep, QtCore.Qt.ItemIsEditable))
+            self.setItem(index, 4, self.__createTableItem(tags_fields, QtCore.Qt.ItemIsEditable))
+            index += 1
 
-
-    def __extract_tag_from_querry(self,query):
+    def __extract_tag_from_querry(self, query):
         tags_fields = self.__EMPTY_STRING
         for tag in query.scenario.tags:
-                self.__insert_tag_in_dic(tag.name,str(tag.id))
-                tags_fields += self.__TAG_DESCRIPTOR + tag.name
+            self.__insert_tag_in_dic(tag.name, str(tag.id))
+            tags_fields += self.__TAG_DESCRIPTOR + tag.name
         return tags_fields
-
 
     def __populate_table_statistics(self, query):
         self.setSortingEnabled(False)
@@ -107,26 +97,22 @@ class TableDataRepresentation(QtGui.QTableWidget):
             step_count = self.__check_string_is_not_None(str(rows.count))
             self.insertRow(index)
             self.setItem(index, 0, self.__createTableItem(name, QtCore.Qt.ItemIsEditable))
-            self.setItem(index, 1, self.__createTableItem( step_count , QtCore.Qt.ItemIsEditable))
-            index +=1
+            self.setItem(index, 1, self.__createTableItem(step_count, QtCore.Qt.ItemIsEditable))
+            index += 1
         self.setSortingEnabled(True)
 
-
-    def sorting_table(self,qt_order ):
-        self.sortItems(0,qt_order)
-
+    def sorting_table(self, qt_order):
+        self.sortItems(0, qt_order)
 
     def __createTableItem(self, table_item_name, item_flag):
-        return_item = QtGui.QTableWidgetItem( table_item_name )
+        return_item = QtGui.QTableWidgetItem(table_item_name)
         return_item.setFlags(item_flag)
         return return_item
-
 
     def __check_string_is_not_None(self, some_string):
         if some_string is None:
             some_string = self.__EMPTY_FIELD
         return some_string
-
 
     def __check_data_table(self, data):
         return_value = True
@@ -138,7 +124,6 @@ class TableDataRepresentation(QtGui.QTableWidget):
             pass
         return return_value
 
-
     def extract_data_fom_sql_table(self):
         if (self.__table_id == self.__FEATURE_TABLE_ID):
             data = self.__db_service_manager.find_features(self.__EMPTY_STRING)
@@ -148,22 +133,18 @@ class TableDataRepresentation(QtGui.QTableWidget):
             data = self.__db_service_manager.find_most_used_steps(self.__MAX_COUNT_VALUE)
         return data
 
-
-    def __create_action_menu(self, action_name , action_method ):
-        return_action = QtGui.QAction(action_name,self)
+    def __create_action_menu(self, action_name, action_method):
+        return_action = QtGui.QAction(action_name, self)
         return_action.triggered.connect(action_method)
         return return_action
-
 
     def __order_ascending_table_view(self):
         self.sortItems(self.__column_index_selected, QtCore.Qt.AscendingOrder)
 
-
     def __insert_tag_in_dic(self, tag_name, tag_id):
         result = self.__tags_dictionary.get(tag_name)
-        if result is None :
+        if result is None:
             self.__tags_dictionary[tag_name] = tag_name + ":" + tag_id
-
 
     def __get_tag_dictionary_as_list_from_selection(self, row_selection):
         row_selection_list = row_selection.rstrip().lstrip().split(self.__WHITE_SPACE_TEXT)
@@ -172,25 +153,22 @@ class TableDataRepresentation(QtGui.QTableWidget):
             return_list.append(self.__tags_dictionary[row_tag[1:]])
         return return_list
 
-
     def __get_complete_tag_from_dic_as_list(self):
         return self.__tags_dictionary.values()
 
     def __is_tag_row(self, data):
         return (self.__TAG_DESCRIPTOR in data)
 
-
     def __search_by_tag_in_current_row(self):
         data = self.__get_text_from_selected_cell()
-        if self.__is_tag_row(data) :
+        if self.__is_tag_row(data):
             self.__tag_viewer.set_data_to_combo_list(self.__get_tag_dictionary_as_list_from_selection(data))
             self.__tag_viewer.set_data_service(self.__db_service_manager)
             self.__tag_viewer.show()
 
-
     def __get_text_from_selected_cell(self):
         model = self.model()
-        index = model.index( self.__row_index_selected, self.__column_index_selected)
+        index = model.index(self.__row_index_selected, self.__column_index_selected)
         return str(model.data(index).toString())
 
     def __search_by_tags_in_dictionary(self):
@@ -199,10 +177,8 @@ class TableDataRepresentation(QtGui.QTableWidget):
         self.__tag_viewer.show()
         print "__search_by_tags_in_dictionary"
 
-
     def __order_descending_table_view(self):
-        self.sortItems(self.__column_index_selected, QtCoreQt.DescendingOrder)
-
+        self.sortItems(self.__column_index_selected, QtCore.Qt.DescendingOrder)
 
     def contextMenuEvent(self, event):
         self.__column_index_selected = self.indexAt(event.pos()).column()
@@ -215,11 +191,9 @@ class TableDataRepresentation(QtGui.QTableWidget):
         menu.exec_(event.globalPos())
         event.accept()
 
-
     def __get_current_cell_position(self, row, column):
         self.__current_row_selected = row
         self.__current_column_selected = column
-
 
     def __lt__(self, other):
         return self.__number < other.__number
