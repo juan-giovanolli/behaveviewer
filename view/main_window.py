@@ -135,8 +135,6 @@ class MainBehaveWindow(QtGui.QTabWidget):
         self.__feature_directory_path = QtGui.QFileDialog.getExistingDirectory(self, 'SelectDirectory',
                                                                                self.__CURRENT_PATH_LINUX,
                                                                                options)
-        # self.__service_worker.start()
-        
         self.__run_sequencial()
 
     def parsing_directory(self, feature_directory_path=None):
@@ -145,14 +143,13 @@ class MainBehaveWindow(QtGui.QTabWidget):
         if self.__feature_directory_path is not None:
             self.setTextInVerboseLabel("Seletcted Path : {0}".format(feature_directory_path))
             self.setTextInVerboseLabel("parsing directory ....")
-            self.__save_current_directory_to_file()
             self.__process_directory_name()
             path_to_step = os.path.join(self.__feature_directory_path, "steps")
             db.begin()
+            print "parsing directory ...."
             self.__code_parser.parseDir(path_to_step)
             ParserHelper(self.__feature_directory_path)
             db.commit()
-            print "parsing directory ...."
             self.__save_current_directory_to_file()
 
     def creating_db_tables(self):
@@ -192,7 +189,7 @@ class MainBehaveWindow(QtGui.QTabWidget):
                                      }
 
     def _process_terminated(self):
-        self.setTextInVerboseLabel("Process Terminated")
+        self.setTextInVerboseLabel("Process Finished")
         self.__lock_unlock_tabs(True)
 
     def setTextInVerboseLabel(self, label_text):
@@ -213,7 +210,7 @@ class MainBehaveWindow(QtGui.QTabWidget):
             self.__feature_directory_path = input_file.readlines()
 
     def __load_only_tables_view(self):
-        
+
         if self.__feature_directory_path is None:
             self.__load_feature_directory_from_file()
 

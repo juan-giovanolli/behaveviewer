@@ -23,7 +23,7 @@ class NoUiRun:
             ParserHelper(feature_directory_path)
             db.commit()
         else:
-            print "Directory doesn't exist"
+            raise RuntimeError("Directory doesn't exist")
 
     def generate_csv_files(self):
         with open('steps.csv', 'wb') as csvfile:

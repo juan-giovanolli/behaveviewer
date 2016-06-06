@@ -3,6 +3,18 @@ from PyQt4 import QtGui, QtCore
 from tag_viewer import TagViewerTable
 
 
+class MyTableWidgetItem(QtGui.QTableWidgetItem):
+    def __lt__(self, other):
+        if (isinstance(other, QtGui.QTableWidgetItem)):
+            my_value, my_ok = self.data(QtCore.Qt.EditRole).toInt()
+            other_value, other_ok = other.data(QtCore.Qt.EditRole).toInt()
+
+            if (my_ok and other_ok):
+                return my_value < other_value
+
+        return super(MyTableWidgetItem, self).__lt__(other)
+
+
 class TableDataRepresentation(QtGui.QTableWidget):
     __FEATURE_TABLE_ID = "feature_table"
     __STEPS_TABLE_ID = "steps_table"
@@ -105,7 +117,7 @@ class TableDataRepresentation(QtGui.QTableWidget):
         self.sortItems(0, qt_order)
 
     def __createTableItem(self, table_item_name, item_flag):
-        return_item = QtGui.QTableWidgetItem(table_item_name)
+        return_item = MyTableWidgetItem(table_item_name)
         return_item.setFlags(item_flag)
         return return_item
 

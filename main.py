@@ -22,8 +22,11 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('--dir', nargs=1, help='Feature directory from project.')
     parser.add_argument('--no-ui', action='store_true',
-                        help='Runs parser without UI and creates the csv file.')
+                        help='Runs parser without UI and creates the csv file. Delimiter=";"')
     parser.add_argument('--stdout', action='store_true', help='Print data on stdout.')
 
     args = parser.parse_args()
-    main(args.no_ui, args.dir[0], args.stdout)
+    if args.no_ui:
+        main(args.no_ui, args.dir[0], args.stdout)
+    else:
+        main(args.no_ui, None, None)
