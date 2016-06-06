@@ -11,7 +11,7 @@ from view.main_window import MainBehaveWindow
 
 
 def main():
-    Setup({'reset_db': True, 'dummy_db': False})
+    Setup({'reset_db': False, 'dummy_db': False})
 
     app = QtGui.QApplication(sys.argv)
     MainBehaveWindow(EntityService())
