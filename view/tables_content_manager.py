@@ -159,10 +159,12 @@ class TableDataRepresentation(QtGui.QTableWidget):
             self.__tags_dictionary[tag_name] = tag_name + ":" + tag_id
 
     def __get_tag_dictionary_as_list_from_selection(self, row_selection):
-        row_selection_list = row_selection.rstrip().lstrip().split(self.__WHITE_SPACE_TEXT)
+        row_selection_list = row_selection.split('@')
+        print row_selection_list
         return_list = []
         for row_tag in row_selection_list:
-            return_list.append(self.__tags_dictionary[row_tag[1:]])
+			if row_tag:
+				return_list.append(self.__tags_dictionary[row_tag].rstrip().lstrip())
         return return_list
 
     def __get_complete_tag_from_dic_as_list(self):
